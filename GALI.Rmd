@@ -1,0 +1,679 @@
+---
+title: "Data Responsive-report"
+author: "Ouafaa Hmaddi"
+date: "January 18, 2021"
+output: html_document 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+
+#load libraries
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+    #install.packages("BiocManager")
+
+#BiocManager::install("preprocessCore")
+
+library(rio)
+library(tidyverse)
+library(lubridate)
+library(janitor)
+library(ggplot2)
+library(readxl)
+library(reshape2)
+library(readr)
+library(psych)
+library(foreign)
+library(plm)
+library(lme4)
+library(lattice)
+library(lmerTest)
+library(EFAutilities)
+library(haven)
+library(sjPlot)
+library(XLConnect)
+library(preprocessCore)
+
+```
+
+##Function to extract summary model tables  
+```{r}
+lmOut <- function(res, file="test.csv", ndigit=3, writecsv=T) {
+  if (length(grep('summary', class(res)))==0) res <- summary(res)
+  co <- res$coefficients
+  nvar <- nrow(co)
+  ncoll <- ncol(co)
+  f <- res$fstatistic
+  formatter <- function(x) format(round(x,ndigit),nsmall=ndigit)
+  # This sets the number of rows before we start recording the coefficients
+  nstats <- 4
+  # G matrix stores data for output
+  G <- matrix("", nrow=nvar+nstats, ncol=ncoll+1)
+  G[1,1] <- toString(res$call)
+  # Save rownames and colnames
+  G[(nstats+1):(nvar+nstats),1] <- rownames(co)
+  G[nstats, 2:(ncoll+1)] <- colnames(co)
+  # Save Coefficients
+  G[(nstats+1):(nvar+nstats), 2:(ncoll+1)] <- formatter(co)
+  # Save F-stat
+  G[1,2] <- paste0("F(",f[2],",",f[3],")")
+  G[2,2] <- formatter(f[1])
+  # Save F-p value
+  G[1,3] <- "Prob > P"
+  G[2,3] <- formatter(1-pf(f[1],f[2],f[3]))
+  # Save R2
+  G[1,4] <- "R-Squared"
+  G[2,4] <- formatter(res$r.squared)
+  # Save Adj-R2
+  G[1,5] <- "Adj-R2"
+  G[2,5] <- formatter(res$adj.r.squared)
+  print(G)
+  if (writecsv) write.csv(G, file=file, row.names=F)
+}
+
+```
+
+
+```{r Clean data from big firms, non-profit, and non respondants to follow-up survey}
+gali <- import("GALI CLEANED 2019.xlsx") #19412 obs
+gali <- filter(gali, fins_ft_employees_m1 <500 | is.na(fins_ft_employees_m1) ) #19401
+gali <- filter(gali, info_legal_status == "For-profit company") #15433
+gali <- filter(gali, found_additional_cnt < 10 | is.na(found_additional_cnt))
+
+gali <- filter(gali, found_name1_prior_fp <10 | is.na(found_name1_prior_fp))
+gali <- filter(gali, found_name2_prior_fp <10 | is.na(found_name2_prior_fp))
+gali <- filter(gali, found_name3_prior_fp <10 | is.na(found_name3_prior_fp))
+gali <- filter(gali, found_name1_prior_other <10 | is.na(found_name1_prior_other))
+gali <- filter(gali, found_name2_prior_other <10 | is.na(found_name2_prior_other))
+gali <- filter(gali, found_name3_prior_other <10 | is.na(found_name3_prior_other))
+gali <- filter(gali, found_name1_prior_np <10 | is.na(found_name1_prior_np))
+gali <- filter(gali, found_name2_prior_np <10 | is.na(found_name2_prior_np))
+gali <- filter(gali, found_name3_prior_np <10 | is.na(found_name3_prior_np))
+gali <- filter(gali, found_name1_age > 14 | is.na(found_name1_age))
+gali <- filter(gali, found_name2_age > 14 | is.na(found_name2_age))
+gali <- filter(gali, found_name3_age > 14 | is.na(found_name3_age))
+gali <- filter(gali, found_name1_age < 70 | is.na(found_name1_age))
+gali <- filter(gali, found_name2_age < 70 | is.na(found_name2_age))
+gali <- filter(gali, found_name3_age < 70 | is.na(found_name3_age))
+
+#gali <- filter(gali, finished == 1 | `fu1-report_any_prior_accelerator` == 1)
+#gali$receivedHC <- ifelse(gali$finished == 0 & (gali$`fu1-report_any_prior_accelerator` == 0 | is.na(gali$`fu1-report_any_prior_accelerator`)) , 0, 1 )
+
+#Keep only ventures with post acceleration information 
+gali <- filter(gali, `fu1-report_followup_yes` == 1) 
+
+count(gali,info_venture_country_hq)
+
+#Removing countries with less than 30 ventures. 
+
+#First, let's remove the US from the sample, 
+gali <- filter(gali, info_venture_country_hq != "United States of America")
+
+countries_to_keep <- gali %>% 
+  group_by(gali$info_venture_country_hq) %>%
+  summarize(Count=n()) %>%
+  mutate(Percent = round((Count/sum(Count)*100))) %>%
+  arrange(desc(Count))
+
+#X countries have fewer than 70 firms in the sample. Because so few observations may not offer good representation, I excluded firms headquartered in these countries from the analysis, keeping X firms in Y countries and Z industries.
+
+countries_to_keep <- filter(countries_to_keep, `gali$info_venture_country_hq` != 'NA')
+
+countries_to_keep <- filter(countries_to_keep, Count >70)
+countries_to_keep$`gali$info_venture_country_hq`
+
+gali <- gali %>%
+  filter(info_venture_country_hq  %in% countries_to_keep$`gali$info_venture_country_hq`)
+
+#firms that are 5 years or younger when they entered the acceleration program (when data was collected)
+
+if (gali$application_year == 2013) { gali <- filter(gali, info_founding_year > 2007)
+}  else if (gali$application_year == 2014) {gali <- filter(gali, info_founding_year > 2008)
+} else if (gali$application_year == 2015) {gali <- filter(gali, info_founding_year > 2009)
+}  else if (gali$application_year == 2016) {gali <- filter(gali, info_founding_year > 2010)
+} else if (gali$application_year == 2017) {gali <- filter(gali, info_founding_year > 2011)
+}  else gali <- filter(gali, info_founding_year > 2012)
+
+
+```
+
+
+
+##Constrcuting human capital index (control variable)
+###Graduate percentage, Prior C-level Executive Percentage, Average Team Tenure , Team Prior Founding 
+
+```{r Human capital index}
+#Graduate percentage
+
+gali$founder1_grad = ifelse(gali$found_name1_education == "Masters Degree" | 
+                              gali$found_name1_education =="PhD" |
+                              gali$found_name1_education == "Some graduate degree", 1, 0) 
+gali$founder1_grad[is.na(gali$founder1_grad)] <- 0
+
+gali$founder2_grad = ifelse(gali$found_name2_education == "Masters Degree" | 
+                              gali$found_name2_education =="PhD" |
+                              gali$found_name2_education == "Some graduate degree", 1, 0) 
+gali$founder2_grad[is.na(gali$founder2_grad)] <- 0
+
+gali$founder3_grad = ifelse(gali$found_name3_education == "Masters Degree" |
+                              gali$found_name3_education =="PhD" |
+                              gali$found_name3_education == "Some graduate degree", 1, 0)
+gali$founder3_grad[is.na(gali$founder3_grad)] <- 0
+
+gali$nb_of_founders <- gali$found_name1_present + gali$found_name2_present + gali$found_name3_present
+
+gali <- filter(gali, nb_of_founders > 0)
+
+gali$grad_pct = ((gali$founder1_grad + gali$founder2_grad + gali$founder3_grad) / gali$nb_of_founders) 
+
+#Prior C-level Executive Percentage
+
+gali$founder1_job1_clevel = ifelse(is.na(gali$found_name1_job1_role) | gali$found_name1_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder1_job2_clevel = ifelse(is.na(gali$found_name1_job2_role) | gali$found_name1_job2_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder2_job1_clevel = ifelse(is.na(gali$found_name2_job1_role) | gali$found_name2_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder2_job2_clevel = ifelse(is.na(gali$found_name2_job2_role) | gali$found_name2_job2_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder3_job1_clevel = ifelse(is.na(gali$found_name3_job1_role) | gali$found_name3_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder3_job2_clevel = ifelse(is.na(gali$found_name3_job2_role) | gali$found_name3_job2_role !=  "CEO/Executive Director" , 0, 1)
+
+gali$prior_clevel_pct = ((gali$founder1_job1_clevel + gali$founder1_job2_clevel + gali$founder2_job1_clevel + 
+  gali$founder2_job2_clevel + gali$founder3_job1_clevel + gali$founder3_job2_clevel) / (gali$nb_of_founders*2)) 
+
+#Average Team Tenure
+
+gali$avg_teamtenure <- rowMeans(subset(gali, select = c('found_name1_job1_tenure', 'found_name1_job2_tenure', 'found_name2_job1_tenure', 'found_name2_job2_tenure', 'found_name3_job1_tenure', 'found_name3_job2_tenure')), na.rm = TRUE)  
+
+gali$avg_teamtenure[is.nan(gali$avg_teamtenure)] <- 0
+
+#Team Prior Founding
+gali$team_prior_founding <- gali$found_name1_prior_fp + gali$found_name2_prior_fp + gali$found_name3_prior_fp + gali$found_name1_prior_other + gali$found_name2_prior_other + gali$found_name3_prior_other + gali$found_name1_prior_np + gali$found_name2_prior_np + gali$found_name3_prior_np 
+
+#Final Human Capital Index 
+
+gali$z_team_prior_founding <- scale(gali$team_prior_founding, center = TRUE, scale = TRUE)
+gali$z_prior_clevel_pct <- scale(gali$prior_clevel_pct, center = TRUE, scale = TRUE)
+gali$z_avg_teamtenure <- scale(gali$avg_teamtenure, center = TRUE, scale = TRUE)
+gali$z_grad_pct <- scale(gali$grad_pct, center = TRUE, scale = TRUE)
+
+#Cite Bolstad et al, Bioinformatics (2003) 
+
+gali$normq_team_prior_founding <- normalize.quantiles(gali$z_team_prior_founding,copy=TRUE)
+gali$normq_prior_clevel_pct <- normalize.quantiles(gali$z_prior_clevel_pct,copy=TRUE)
+gali$normq_avg_teamtenure <- normalize.quantiles(gali$z_avg_teamtenure,copy=TRUE)
+gali$normq_grad_pct <- normalize.quantiles(gali$z_grad_pct,copy=TRUE)
+
+#group all into an index 
+
+gali$HC_index <- (gali$normq_team_prior_founding + gali$normq_prior_clevel_pct + gali$normq_avg_teamtenure + gali$normq_grad_pct) 
+
+```
+
+##Constrcuting social capital index (control variable)
+
+```{r}
+
+
+```
+
+##Constrcuting financial capital index (control variable)
+
+```{r}
+
+
+```
+
+##Gender decomposition variable 
+
+```{r Gender decomposition variable}
+gali <- gali %>% drop_na(found_name1_gender)
+
+gali$found_name2_gender[is.na(gali$found_name2_gender)] <- 0
+gali$found_name3_gender[is.na(gali$found_name3_gender)] <- 0
+
+gali$founder1_f <- ifelse(gali$found_name1_gender == "F", 1,0)
+gali$founder2_f <- ifelse(gali$found_name2_gender == "F", 1,0)
+gali$founder3_f <- ifelse(gali$found_name3_gender == "F", 1,0)
+
+gali$female_pct <- round(((gali$founder1_f + gali$founder2_f + gali$founder3_f) / gali$nb_of_founders ), 2)
+
+```
+
+
+```{r Cleaning data of acceleration benefit ranking }
+
+#Removing ventures that ranked benefits outside of given scale (i.e. 1 to 7)
+
+gali <- filter(gali, accel_ben_rank_network <= 7 & accel_ben_rank_business_skills
+<= 7 & accel_ben_rank_mentorship <= 7 & accel_ben_rank_access_investors <= 7 & accel_ben_rank_direct_funding <= 7 & accel_ben_rank_access_entreprene <= 7 & accel_ben_rank_aware_cred <= 7 ) 
+
+#Removing ventures that gave the same ranking to two or more benefits 
+gali <- filter(gali, 
+               accel_ben_rank_network != accel_ben_rank_business_skills &
+                 accel_ben_rank_network != accel_ben_rank_mentorship & 
+                 accel_ben_rank_network != accel_ben_rank_access_investors &
+                 accel_ben_rank_network != accel_ben_rank_direct_funding &
+                 accel_ben_rank_network != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_network != accel_ben_rank_aware_cred ) 
+
+gali <- filter(gali, 
+                 accel_ben_rank_business_skills != accel_ben_rank_mentorship & 
+              accel_ben_rank_business_skills != accel_ben_rank_access_investors &
+                 accel_ben_rank_business_skills != accel_ben_rank_direct_funding &
+              accel_ben_rank_business_skills != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_business_skills != accel_ben_rank_aware_cred ) 
+
+gali <- filter(gali, 
+                accel_ben_rank_mentorship != accel_ben_rank_access_investors &
+                 accel_ben_rank_mentorship != accel_ben_rank_direct_funding &
+                 accel_ben_rank_mentorship != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_mentorship != accel_ben_rank_aware_cred ) 
+
+gali <- filter(gali, 
+              accel_ben_rank_access_investors != accel_ben_rank_direct_funding &
+            accel_ben_rank_access_investors != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_access_investors != accel_ben_rank_aware_cred ) 
+
+gali <- filter(gali, 
+              accel_ben_rank_direct_funding != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_direct_funding != accel_ben_rank_aware_cred )
+
+gali <- filter(gali, 
+              accel_ben_rank_access_entreprene != accel_ben_rank_aware_cred )
+
+```
+
+#Rnak 1 shows the most important benefit (highest attention)
+
+```{r}
+
+#Calculating the average of different benifits to group them into one of the 3 categories of capital plus signaling. Then making the range of values between 0 and 1  
+
+gali$attention_HC <- round((rowMeans(gali[,
+                                  c('accel_ben_rank_business_skills',
+                                    'accel_ben_rank_mentorship')],
+                              na.rm=TRUE) / 7),2)
+
+gali$attention_signaling <- round((gali$accel_ben_rank_aware_cred / 7),2)
+
+gali$attention_SC <- round((rowMeans(gali[,
+                                  c('accel_ben_rank_network',
+                                'accel_ben_rank_access_entreprene')],
+                              na.rm=TRUE) / 7),2)
+  
+gali$attention_FC <- round((rowMeans(gali[,
+                                c('accel_ben_rank_access_investors',
+                                  'accel_ben_rank_direct_funding')],
+                              na.rm=TRUE) / 7),2)
+
+#the lowest the value the highest the attention 
+#I will then mutiply this by the country index to measure the congruence level
+
+range(gali$attention_signaling)
+```
+
+```{r Capital structure study variables}
+
+##Total invesmtment
+gali_0$tot_cap_m1 <- rowSums(gali_0[ , c('inv_ownmoney_m1', 'inv_outequity_m1', 'inv_totaldebt_m1', 'inv_philan_m1')],na.rm = TRUE)
+
+gali_0$tot_cap_sincefound <- rowSums(gali_0[ , c('inv_ownmoney_sincefound', 'inv_outequity_sincefound', 'inv_totaldebt_sincefound', 'inv_philan_sincefound')],na.rm = TRUE)
+
+gali_0$fu1_tot_cap_m1 <- rowSums(gali_0[ , c('fu1-inv_ownmoney_m1', 'fu1-inv_outequity_m1', 'fu1-inv_totaldebt_m1', 'fu1-inv_philan_m1')],na.rm = TRUE)
+
+##Percentage of each capital type 
+###Equity
+gali_0$pctequity_m1 <- gali_0$inv_outequity_m1 / gali_0$tot_cap_m1
+gali_0$pctequity_sincefound <- gali_0$inv_outequity_sincefound / gali_0$tot_cap_sincefound
+gali_0$fu1_pctequity_m1 <- gali_0$`fu1-inv_outequity_m` / gali_0$fu1_tot_cap_m1
+
+###Debt
+gali_0$pctdebt_m1 <- gali_0$inv_totaldebt_m1 / gali_0$tot_cap_m1
+gali_0$pctdebt_sincefound <- gali_0$inv_totaldebt_sincefound / gali_0$tot_cap_sincefound
+gali_0$fu1_pctdebt_m1 <- gali_0$`fu1-inv_totaldebt_m` / gali_0$fu1_tot_cap_m1
+
+###Own Money
+gali_0$pctownmoney_m1 <- gali_0$inv_ownmoney_m1 / gali_0$tot_cap_m1
+gali_0$pctownmoney_sincefound <- gali_0$inv_ownmoney_sincefound / gali_0$tot_cap_sincefound
+gali_0$fu1_pctownmoney_m1 <- gali_0$`fu1-inv_ownmoney_m` / gali_0$fu1_tot_cap_m1
+
+###Phillantropy
+gali_0$pctphilan_m1 <- gali_0$inv_philan_m1 / gali_0$tot_cap_m1
+gali_0$pctphilan_sincefound <- gali_0$inv_philan_sincefound / gali_0$tot_cap_sincefound
+gali_0$fu1_pctphilan_m1 <- gali_0$`fu1-inv_philan_m` / gali_0$fu1_tot_cap_m1
+
+
+##Single source vs dominant source (> 90%)
+###Single source
+gali_0$single_source_m1 <- ifelse(gali_0$pctequity_m1 == 1 | 
+                                  gali_0$pctdebt_m1 == 1|
+                                  gali_0$pctownmoney_m1 == 1 |
+                                  gali_0$pctphilan_m1 ==1 , 1, 0)
+
+gali_0$single_source_sincefound <- ifelse(gali_0$pctequity_sincefound == 1 | 
+                                  gali_0$pctdebt_sincefound == 1|
+                                  gali_0$pctownmoney_sincefound == 1 |
+                                  gali_0$pctphilan_sincefound ==1 , 1, 0)
+
+gali_0$single_fu1_source_m1 <- ifelse(gali_0$fu1_pctequity_m1 == 1 | 
+                                  gali_0$fu1_pctdebt_m1 == 1|
+                                  gali_0$fu1_pctownmoney_m1 == 1 |
+                                  gali_0$fu1_pctphilan_m1 ==1 , 1, 0)
+
+###Dominant source
+gali_0$dominant_source_m1 <- ifelse((gali_0$pctequity_m1 >= .9 | 
+                                  gali_0$pctdebt_m1 >= .9 |
+                                  gali_0$pctownmoney_m1 >= .9 |
+                                  gali_0$pctphilan_m1 >= .9) &
+                                    gali_0$single_source_m1 == 0, 1, 0)
+
+
+gali_0$dominant_source_sincefound <- ifelse((gali_0$pctequity_sincefound >= .9 | 
+                                  gali_0$pctdebt_sincefound >= .9 |
+                                  gali_0$pctownmoney_sincefound >= .9 |
+                                  gali_0$pctphilan_sincefound >= .9) &
+                                  gali_0$single_source_m1 == 0, 1, 0)
+
+gali_0$dominant_fu1_source_m1 <- ifelse((gali_0$fu1_pctequity_m1 >= .9 | 
+                                  gali_0$fu1_pctdebt_m1 >= .9 |
+                                  gali_0$fu1_pctownmoney_m1 >= .9 |
+                                  gali_0$fu1_pctphilan_m1 >= .9) &
+                                  gali_0$single_source_m1 == 0, 1, 0)
+```
+
+```{r Apirations for capital structure in 12 months and 3 years }
+##Total aspired  invesmtment Pre-acceleration 
+gali_0$tot_plans_cap_12m <- rowSums(gali_0[ , c('inv_plans_outequity_12months', 'inv_plans_debt_12months', 'inv_plans_philan_12months')],na.rm = TRUE)
+
+gali_0$tot_plans_cap_3y <- rowSums(gali_0[ , c('inv_plans_outequity_3years', 'inv_plans_debt_3years', 'inv_plans_philan_3years')], na.rm = TRUE)
+
+##Total aspired  invesmtment Post-acceleration 
+gali_0$fu1_tot_plans_cap_12m <- rowSums(gali_0[ , c('fu1-inv_plans_outequity_12months', 'fu1-inv_plans_debt_12months', 'fu1-inv_plans_philan_12months')], na.rm = TRUE)
+
+gali_0$fu1_tot_plans_cap_3y <- rowSums(gali_0[ , c('fu1-inv_plans_outequity_3years', 'fu1-inv_plans_debt_3years', 'fu1-inv_plans_philan_3years')], na.rm = TRUE)
+
+
+##Aspired percentage of each capital type pre-acceleration 
+###Equity
+gali_0$pctequity_plan12m <- gali_0$inv_plans_outequity_12months / gali_0$tot_plans_cap_12m
+gali_0$pctequity_plan3y <- gali_0$inv_plans_outequity_3years / gali_0$tot_plans_cap_3y
+
+###Debt
+gali_0$pctdebt_m1 <- gali_0$inv_plans_debt_12months / gali_0$tot_plans_cap_12m
+gali_0$pctdebt_sincefound <- gali_0$inv_plans_debt_3years / gali_0$tot_plans_cap_3y
+
+###Phillantropy
+gali_0$pctphilan_m1 <- gali_0$inv_plans_philan_12months / gali_0$tot_plans_cap_12m
+gali_0$pctphilan_sincefound <- gali_0$inv_plans_philan_3years / gali_0$tot_plans_cap_3y
+
+##Aspired percentage of each capital type post-acceleration 
+###Equity
+gali_0$fu1_pctequity_plan12m <- gali_0$`fu1-inv_plans_outequity_12months` / gali_0$fu1_tot_plans_cap_12m
+gali_0$fu1_pctequity_plan3y <- gali_0$`fu1-inv_plans_outequity_3years` / gali_0$fu1_tot_plans_cap_3y
+
+###Debt
+gali_0$fu1_pctdebt_plan12m <- gali_0$`fu1-inv_plans_debt_12months` / gali_0$fu1_tot_plans_cap_12m
+gali_0$fu1_pctdebt_plan3y <- gali_0$`fu1-inv_plans_debt_3years` / gali_0$fu1_tot_plans_cap_3y
+
+###Phillantropy
+gali_0$fu1_pctphilan_plan12m <- gali_0$`fu1-inv_plans_philan_12months` / gali_0$fu1_tot_plans_cap_12m
+gali_0$fu1_pctphilan_plan3y <- gali_0$`fu1-inv_plans_philan_3years` / gali_0$fu1_tot_plans_cap_3y
+
+```
+
+#Country indices to interact with venture attention and construct conguence level 
+
+```{r Merge with GEM NES NATIONAL data}
+
+gem15 <- import("GEM 2015 NES NATIONAL.sav")
+gem14 <- import("GEM 2014 NES NATIONAL.sav")
+gem13 <- import("GEM 2013 NES NATIONAL.sav")
+
+#GEM Selecting only Human Capital Variables (HC = human capital)
+
+gem_HC15 <-gem15 %>%
+  select(NES15COUNTRY, NES15RNAME, NES15_C02_MEAN9, NES15_D01_MEAN9, NES15_D02_MEAN9, NES15_D03_MEAN9, NES15_D04_MEAN9, NES15_D05_MEAN9, NES15_D06_MEAN9, ZNES15D1SUM9, ZNES15D2SUM9,   EU, OECD, BRICS)
+
+gem_HC14 <-gem14 %>%
+  select(NES14COUNTRY, NES14RNAME, NES14_C02_MEAN, NES14_D01_MEAN, NES14_D02_MEAN, NES14_D03_MEAN, NES14_D04_MEAN, NES14_D05_MEAN, NES14_D06_MEAN, ZNES14D1SUM, ZNES14D2SUM,   EU, OECD, BRICS)
+
+gem_HC13 <-gem13 %>%
+  select(NES13COUNTRY, NES13RNAME, NES13_C02_MEAN, NES13_D01_MEAN, NES13_D02_MEAN, NES13_D03_MEAN, NES13_D04_MEAN, NES13_D05_MEAN, NES13_D06_MEAN, ZNES13D1SUM, ZNES13D2SUM,   EU, OECD, BRICS)
+
+gem <- bind_rows(gem_HC15, gem_HC14, gem_HC13)
+
+gem$NES15RNAME[gem$NES15RNAME == "UK"] <-"UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND"
+
+gem$NES15RNAME[gem$NES15RNAME == "NETEHERLANDS"] <- "NETHERLANDS"
+
+gem1 <- bind_rows(gem_HC14, gem_HC15, gem_HC13)
+
+gem1$NES14RNAME[gem1$NES14RNAME == "UK"] <-"UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND"
+gem1$NES14RNAME[gem1$NES14RNAME == "NETEHERLANDS"] <- "NETHERLANDS"
+
+gem2 <- bind_rows(gem_HC13, gem_HC15, gem_HC14)
+
+gem2$NES13RNAME[gem2$NES13RNAME == "UK"] <-"UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND"
+gem2$NES13RNAME[gem2$NES13RNAME == "NETEHERLANDS"] <- "NETHERLANDS"
+
+gali[,8] <- toupper(gali[,8])
+
+gem_HC <- rename(gem, "info_venture_country_hq" = "NES15RNAME")
+
+gem_HC1 <- rename(gem1, "info_venture_country_hq" = "NES14RNAME")
+
+gem_HC2 <- rename(gem2, "info_venture_country_hq" = "NES13RNAME")
+
+gali_NES <- left_join( gali, gem_HC,  by = "info_venture_country_hq")
+
+gali_NES1 <- left_join(gali, gem_HC1, by = "info_venture_country_hq")
+
+gali_NES1 <- filter(gali_NES1 , info_venture_country_hq == "UGANDA" | info_venture_country_hq == "EL SALVADOR")
+
+gali_NES2 <- left_join(gali, gem_HC2, by = "info_venture_country_hq")
+
+gali_NES2 <- filter(gali_NES2 , info_venture_country_hq == "ZAMBIA" | info_venture_country_hq == "GHANA" | info_venture_country_hq == "NIGERIA")
+
+galiNES <- bind_rows(gali_NES, gali_NES1, gali_NES2)
+
+countries_list <- galiNES %>% 
+  group_by(galiNES$info_venture_country_hq) %>%
+  summarize(Count=n()) %>%
+  mutate(Percent = round((Count/sum(Count)*100))) %>%
+  arrange(desc(Count))
+
+```
+
+
+
+```{r Merge with GEM APS data}
+#APS0 <- import("GEM 2016 APS Global.sav")
+APS <- APS0 %>% 
+  select(suskill, country, ctryalp) %>%
+  group_by(country) %>%
+  summarise(skill_mean = mean(suskill, na.rm=TRUE))
+
+APS <- rename(APS, "NES15COUNTRY" = "country")
+
+gali_NESAPS <- merge(gali_NES, APS, by = "NES15COUNTRY")
+
+countries_list <- filter(countries_list, Count > 25)
+
+gali_GEM <- gali_NESAPS %>%
+  filter(info_venture_country_hq  %in% countries_list$`gali_NES$info_venture_country_hq`)
+
+
+```
+
+
+```{r}
+# Create dummy variables
+gali_GEM$res_man <- ifelse(gali_GEM$most_important_benefit=="acc_managerial", 1, 0)
+gali_GEM$res_fin <- ifelse(gali_GEM$most_important_benefit=="acc_financial_max", 1, 0)
+gali_GEM$res_soc <- ifelse(gali_GEM$most_important_benefit=="acc_social_max", 1, 0)
+gali_GEM$res_sig <- ifelse(gali_GEM$most_important_benefit=="acc_signaling", 1, 0)
+
+#Renaming for plot purposes 
+gali_GEM$info_venture_country_hq[gali_GEM$info_venture_country_hq == "UNITED STATES OF AMERICA"] <-"USA"
+
+gali_GEM$info_venture_country_hq[gali_GEM$info_venture_country_hq == "UNITED KINGDOM OF GREAT BRITAIN AND NORTHERN IRELAND"] <-"UNITED KINGDOM"
+
+gali_GEM_noUS <- filter(gali_GEM, info_venture_country_hq != "USA")
+
+```
+
+
+
+###ANALYSIS BASED ON GALI_GEM data to evaluate normative and cognitive differences and the impact of human capital as an acceleration resource 
+
+```{r}
+#Summary table
+
+#ls(gali_GEM)
+
+#IV res_man Attention to human capital by the founders 
+#DVs fins_revenues_m1 fu1-fins_revenues_m1 fins_revenues_sincefound 
+
+gali_GEM$y1_revenue <- gali_GEM$`fu1-fins_revenues_m1` - gali_GEM$fins_revenues_m1
+gali_GEM$y1_ownmoeny <- gali_GEM$`fu1-inv_ownmoney_m1` - gali_GEM$inv_ownmoney_m1
+gali_GEM$y1_aspiration_cap <- gali_GEM$fu1_tot_plans_cap_12m - gali_GEM$tot_plans_cap_12m
+gali_GEM$y1_raised_cap <- gali_GEM$fu1_tot_cap_m1 - gali_GEM$tot_cap_m1
+
+
+fu1-inv_plans_outequity_12months
+fu1-inv_plans_outequity_3years
+fu1_tot_plans_cap_12m
+
+#Controls 
+
+fu1-report_any_prior_accelerator
+
+#Revenue as a DV
+
+
+revenue_lm_b <- lm(`fu1-fins_revenues_m1` ~ res_man, data = gali_GEM_noUS)
+summary(revenue_lm_b)
+
+revenue_lm <- lm(`fu1-fins_revenues_m1` ~ res_man + `fu1-report_any_prior_accelerator` + finished + fins_ft_employees_m1 ,
+                 data = gali_GEM)
+summary(revenue_lm)
+
+revenue_lm_cog <- lm(`fu1-fins_revenues_m1` ~ res_man + res_man*skill_mean + `fu1-report_any_prior_accelerator` + fins_ft_employees_m1, data = gali_GEM)
+summary(revenue_lm_cog)
+
+revenue_lm_norm <- lm(`fu1-fins_revenues_m1` ~ res_man + res_man*ZNES15D2SUM9 +  res_man*skill_mean+ `fu1-report_any_prior_accelerator` + fins_ft_employees_m1+ finished, data = gali_GEM)
+summary(revenue_lm_norm)
++ fins_ft_employees_m1 + finished
+
+#Capital aspirations as a DV
+
+lm_b <- lm(fins_revenues_m1  ~ receivedHC*res_man  , data = gali_GEM)
+
+summary(lm_b)
+
+
+lmOut(lm_b, file =  "results_asp22.csv")
+
+
+ggplot(gali_GEM, aes(skill_mean, ZNES15D2SUM9, label= info_venture_country_hq))+
+  geom_point(colour = "Light Blue")+
+  geom_text(check_overlap = TRUE, size = 2.5, nudge_y = 0.1)+
+  theme_minimal()+
+  xlab("Cognitive acceptance")+
+  ylab("Normative acceptance")
+
+gali_GEM %>% 
+  group_by(info_venture_country_hq) %>%
+  summarise(mean(NES15D2SUM_MEAN9))
+
+gali_GEM %>% 
+  group_by(info_venture_country_hq) %>%
+  summarise(mean(NES15_D01_MEAN9))
+
+
+```
+
+
+
+
+
+```{r fig.width=15}
+ggplot(gali_GEM, aes(info_venture_country_hq))+
+  geom_histogram(stat = "count")+
+  theme(axis.text.x = element_text(angle = -80))
+
+```
+
+
+
+```{r Merge with VIMBI data}
+vimbi <-  import("vimbi2017.xlsx") #211 obs
+vimbi <- rename(vimbi, "info_venture_country_hq" = "Country: World Bank name")
+vimbi <- clean_names(vimbi)
+
+gali_vimbi <- merge(gali_0,vimbi, by = "info_venture_country_hq")
+
+```
+
+
+```{r}
+# Create dummy variables
+gali_vimbi$res_man <- ifelse(gali_vimbi$most_important_benefit=="acc_managerial", 1, 0)
+gali_vimbi$res_fin <- ifelse(gali_vimbi$most_important_benefit=="acc_financial_max", 1, 0)
+gali_vimbi$res_soc <- ifelse(gali_vimbi$most_important_benefit=="acc_social_max", 1, 0)
+gali_vimbi$res_sig <- ifelse(gali_vimbi$most_important_benefit=="acc_signaling", 1, 0)
+
+gali_vimbi <- filter(gali_vimbi, tot_cap_sincefound < 10000000)
+
+#res_fe_mod <- lm(res_sig ~ x3_cp_capital_rank_percent_2016_h_good, 
+                    #data = gali_vimbi)
+
+vimbi$gni_capita_10_year_growth_2006_2015 <- as.numeric(vimbi$gni_capita_10_year_growth_2006_2015)
+
+ggplot(gali_vimbi, aes(x=fins_revenues_sincefound, y=x1_lb_labour_flexibility_education_support_2016_h_good, colour=factor(res_sig))) +
+  geom_point() +
+  scale_x_log10()
+
+
+hlm <- lmer(log1p(fins_revenues_sincefound)~1+(1|x1_lb_labour_flexibility_education_support_2016_h_good), gali_vimbi)
+
+summary(hlm)
+
+with(gali_vimbi, tapply(fins_revenues_sincefound, x1_lb_labour_flexibility_education_support_2016_h_good, mean))
+coef(hlm)
+
+dt_matrix <- cor(na.omit(vimbi[ ,3:8]))
+
+cortest.bartlett(na.omit(vimbi[ ,3:8]))
+
+det(dt_matrix)
+
+pc1 <- principal(na.omit(vimbi[ ,3:8]), nfactors=3, rotate="none")
+plot(pc1$values, type = "b")
+
+efaMR(x=na.omit(vimbi[ ,3:8]), factors=3, covmat=NULL, n.obs=151, 
+      dist='normal', fm='ols', rtype='orthogonal', rotation = 'CF-varimax', 
+      input.A=NULL, additionalRC = NULL, 
+      nstart = 100, compare = 'First', plot = T, cex = .5,
+      normalize = FALSE, geomin.delta = .01, 
+      MTarget = NULL, MWeight = NULL, PhiTarget = NULL, PhiWeight = NULL, 
+      useorder = FALSE, mnames = NULL, fnames = NULL, wxt2 = 1)
+
+bwplot(x1_lb_labour_flexibility_education_support_2016_h_good~resid(hlm), gali_vimbi)
+
+```
+
+```{r Clean data from for profit ventures that included philantropy in their capital structure }
+
+#gali_0 <- filter(gali_0,pctphilan_sincefound == 0 )
+
+```
+
+
+```{r fig.width=15}
+ggplot(gali_0, aes(info_venture_country_hq))+
+  geom_histogram(stat = "count")+
+  theme(axis.text.x = element_text(angle = -80))
+
+```
