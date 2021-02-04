@@ -385,9 +385,12 @@ revenue_data$year <- as.numeric(revenue_data$year)
 
 #Initial FE regression without controls 
 ```{r}
+revenue_data <- transform(revenue_data, id=match(paste(revenue_data$country,revenue_data$New_External_ID,sep="_"), unique(paste(revenue_data$country,revenue_data$New_External_ID,sep="_")))) #create a column called id which assigns a unique id to the unique combinations of origin and destination countries
+
+
 gali_fe_mod <- plm(revenue ~ (attention_fc*inst_fc_gci) , 
                    data = revenue_data, 
-                   index = c("country", "year"),
+                   index = c("id", "year"),
                    model = "within")
 
 ```
