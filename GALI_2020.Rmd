@@ -41,43 +41,6 @@ library(caret)
 
 ```
 
-##Function to extract summary model tables  
-```{r}
-lmOut <- function(res, file="test.csv", ndigit=3, writecsv=T) {
-  if (length(grep('summary', class(res)))==0) res <- summary(res)
-  co <- res$coefficients
-  nvar <- nrow(co)
-  ncoll <- ncol(co)
-  f <- res$fstatistic
-  formatter <- function(x) format(round(x,ndigit),nsmall=ndigit)
-  # This sets the number of rows before we start recording the coefficients
-  nstats <- 4
-  # G matrix stores data for output
-  G <- matrix("", nrow=nvar+nstats, ncol=ncoll+1)
-  G[1,1] <- toString(res$call)
-  # Save rownames and colnames
-  G[(nstats+1):(nvar+nstats),1] <- rownames(co)
-  G[nstats, 2:(ncoll+1)] <- colnames(co)
-  # Save Coefficients
-  G[(nstats+1):(nvar+nstats), 2:(ncoll+1)] <- formatter(co)
-  # Save F-stat
-  G[1,2] <- paste0("F(",f[2],",",f[3],")")
-  G[2,2] <- formatter(f[1])
-  # Save F-p value
-  G[1,3] <- "Prob > P"
-  G[2,3] <- formatter(1-pf(f[1],f[2],f[3]))
-  # Save R2
-  G[1,4] <- "R-Squared"
-  G[2,4] <- formatter(res$r.squared)
-  # Save Adj-R2
-  G[1,5] <- "Adj-R2"
-  G[2,5] <- formatter(res$adj.r.squared)
-  print(G)
-  if (writecsv) write.csv(G, file=file, row.names=F)
-}
-
-```
-
 
 ```{r Countries to analyse in main sample}
 gali <- import("Data/GALI_External_DataRelease_2020.xlsx") 
@@ -274,39 +237,6 @@ gci <- select(gci, !starts_with('EOSQ'))
 
 #Attention to capital - venture data
 
-```{r}
-#Rank 1 shows the most important benefit (highest attention)
-#After normalizing, I will substract 1 and take absolute value to make sure higher value in range 0 to 1 goes to higher attention. This is to ensure that country and ventures variables move on the same directions, in order to construct a congurance level. 
-
-#Normalize Attention data (all data is based on a scale from 1 to 7)
-preproc_gali <- preProcess(gali %>%
-                            select(starts_with("accel_ben_rank_"))
-                          , method=c("range"))
-gali <- predict(preproc_gali, gali)
-
-
-#Calculating the average of different benifits to group them into one of the 3 categories of capital plus signaling. 
-
-gali$attention_hc <- 1- round((rowMeans(gali[,
-                                  c('accel_ben_rank_business_skills',
-                                    'accel_ben_rank_mentorship')],
-                              na.rm=TRUE)),2)
-
-gali$attention_signaling <- 1- round((gali$accel_ben_rank_aware_cred),2)
-
-gali$attention_sc <- 1- round((rowMeans(gali[,
-                                  c('accel_ben_rank_network',
-                                'accel_ben_rank_access_entreprene')],
-                              na.rm=TRUE)),2)
-  
-gali$attention_fc <- 1- round((rowMeans(gali[,
-                                c('accel_ben_rank_access_investors',
-                                  'accel_ben_rank_direct_funding')],
-                              na.rm=TRUE)),2)
-
-#I will then mutiply this by the country index to measure the congruence level
-```
-
 ```{r Cleaning data of acceleration benefit ranking }
 
 #Removing ventures that ranked benefits outside of given scale (i.e. 1 to 7)
@@ -349,6 +279,41 @@ gali <- filter(gali,
               accel_ben_rank_access_entreprene != accel_ben_rank_aware_cred )
 
 ```
+
+
+```{r}
+#Rank 1 shows the most important benefit (highest attention)
+#After normalizing, I will substract 1 and take absolute value to make sure higher value in range 0 to 1 goes to higher attention. This is to ensure that country and ventures variables move on the same directions, in order to construct a congurance level. 
+
+#Normalize Attention data (all data is based on a scale from 1 to 7)
+preproc_gali <- preProcess(gali %>%
+                            select(starts_with("accel_ben_rank_"))
+                          , method=c("range"))
+gali <- predict(preproc_gali, gali)
+
+
+#Calculating the average of different benifits to group them into one of the 3 categories of capital plus signaling. 
+
+gali$attention_hc <- 1- round((rowMeans(gali[,
+                                  c('accel_ben_rank_business_skills',
+                                    'accel_ben_rank_mentorship')],
+                              na.rm=TRUE)),2)
+
+gali$attention_signaling <- 1- round((gali$accel_ben_rank_aware_cred),2)
+
+gali$attention_sc <- 1- round((rowMeans(gali[,
+                                  c('accel_ben_rank_network',
+                                'accel_ben_rank_access_entreprene')],
+                              na.rm=TRUE)),2)
+  
+gali$attention_fc <- 1- round((rowMeans(gali[,
+                                c('accel_ben_rank_access_investors',
+                                  'accel_ben_rank_direct_funding')],
+                              na.rm=TRUE)),2)
+
+#I will then mutiply this by the country index to measure the congruence level
+```
+
 
 
 #Join all 3 datasets 
@@ -408,8 +373,10 @@ gali_joined <- gali_joined %>% mutate(revenue_tot = gali_joined %>%
 
 #Exploring with plots
 ```{r}
-ggplot(gali_joined, aes()) +
+ggplot(gali_joined, aes(inst_hc_gem,inst_fc_gem)) +
+  geom_point()
   
+
 ```
 
 
