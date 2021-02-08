@@ -362,38 +362,57 @@ cor(gali_joined$inst_fc_gem, gali_joined$inst_fc_gci, use="complete.obs")
 
 ```
 
-
-
-#Panel data structure. Revenues in year t-1 as revenue 
+#Fiancial Capital acquisiton total
 ```{r}
-revenue_data <- select(gali_joined, starts_with('country') | starts_with("attention") | starts_with("inst") | ends_with("fins_revenues_m1") | ends_with("External_ID"))
+gali_joined  <- gali_joined %>% mutate(capital_raised0 = gali_joined %>% select(starts_with("inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
 
-revenue_data <- select(revenue_data, -fu4fins_revenues_m1)
+gali_joined  <- gali_joined %>% mutate(capital_raised1 = gali_joined %>% select(starts_with("fu1inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
 
-revenue_data <- revenue_data %>% 
-  gather(year, revenue, ends_with("fins_revenues_m1"))
+gali_joined  <- gali_joined %>% mutate(capital_raised2 = gali_joined %>% select(starts_with("fu2inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
 
-revenue_data$year[revenue_data$year == "fins_revenues_m1"] <- -1
-revenue_data$year[revenue_data$year == "fu1fins_revenues_m1"] <- 0
-revenue_data$year[revenue_data$year == "fu2fins_revenues_m1"] <- 1
-revenue_data$year[revenue_data$year == "fu3fins_revenues_m1"] <- 2
+gali_joined  <- gali_joined %>% mutate(capital_raised3 = gali_joined %>% select(starts_with("fu3inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
 
-revenue_data$year <- as.numeric(revenue_data$year)
+gali_joined  <- gali_joined %>% mutate(capital_raised4 = gali_joined %>% select(starts_with("fu4inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali_joined  <- gali_joined %>% mutate(capital_raised_tot = gali_joined %>% select(starts_with("capital_raised")) %>% 
+                         rowSums(na.rm = TRUE))
 
 ```
 
-
-#Initial FE regression without controls 
+#Human capital acquisition 
 ```{r}
-revenue_data <- transform(revenue_data, id=match(paste(revenue_data$country,revenue_data$New_External_ID,sep="_"), unique(paste(revenue_data$country,revenue_data$New_External_ID,sep="_")))) #create a column called id which assigns a unique id to the unique combinations of origin and destination countries
-
-
-gali_fe_mod <- plm(revenue ~ (attention_fc*inst_fc_gci) , 
-                   data = revenue_data, 
-                   index = c("id", "year"),
-                   model = "within")
-
+gali_joined  <- gali_joined %>% mutate(hr_tot = gali_joined %>%
+                         select(contains("_employees")) %>% 
+                         rowSums(na.rm = TRUE))
 ```
+
+#Social capital acquisition 
+```{r}
+gali_joined <- gali_joined %>% mutate(equity_sources_tot = gali_joined %>%
+                         select(contains("equityfrom")) %>% 
+                         rowSums(na.rm = TRUE))
+```
+
+#Revenues
+```{r}
+gali_joined <- gali_joined %>% mutate(revenue_tot = gali_joined %>%
+                         select(contains("revenues")) %>% 
+                         rowSums(na.rm = TRUE))
+```
+
+
+#Exploring with plots
+```{r}
+ggplot(gali_joined, aes()) +
+  
+```
+
+
 
 
 
