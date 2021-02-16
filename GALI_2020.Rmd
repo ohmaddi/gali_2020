@@ -143,6 +143,7 @@ gem_nes <- gem_nes [, -(5:6)]
 
 #Normalize NES data (all data is based on a scale from 1 to 5)
 preproc_nes <- preProcess(gem_nes[,(4:5)], method=c("range"))
+
 gem_nes <- predict(preproc_nes, gem_nes)
 
 ```
@@ -150,46 +151,48 @@ gem_nes <- predict(preproc_nes, gem_nes)
 #GEM APS data
 
 ```{r}
-gem_aps <- import("Data/GEM-APS.csv")
+#gem_aps <- import("Data/GEM-APS.csv")
 #Clean and tidy gem APS
-gem_aps <- clean_names(gem_aps)
-gem_aps <- gem_aps %>%
-  row_to_names(row_number = 2)
-gem_aps[,-2] <- gem_aps[,-2] %>% mutate_if(is.character,as.numeric)
-gem_aps <- clean_names(gem_aps)
-gem_aps <- gem_aps %>%
-  rename(country = economy) %>%
-  rename(inst_signaling_aps = high_status_to_successful_entrepreneurs)%>%
-  rename(inst_hc_aps = established_business_ownership) %>%
-  rename(inst_sc_aps = total_early_stage_entrepreneurial_activity_tea)
+#gem_aps <- clean_names(gem_aps)
+#gem_aps <- gem_aps %>%
+  #row_to_names(row_number = 2)
+#gem_aps[,-2] <- gem_aps[,-2] %>% mutate_if(is.character,as.numeric)
+#gem_aps <- clean_names(gem_aps)
+#gem_aps <- gem_aps %>%
+  #rename(country = economy) %>%
+  #rename(inst_signaling_aps = high_status_to_successful_entrepreneurs) #%>%
+  #rename(inst_hc_aps = established_business_ownership) %>%
+  #rename(inst_sc_aps = total_early_stage_entrepreneurial_activity_tea)
 
 #All APS data is a percentage. We devide by 100 to gat [0,1] range
-gem_aps$inst_signaling_gem <- gem_aps$inst_signaling_aps /100
-gem_aps$inst_hc_aps <- gem_aps$inst_hc_aps /100
-gem_aps$inst_sc_gem <- gem_aps$inst_sc_aps /100
+#gem_aps$inst_signaling_gem <- gem_aps$inst_signaling_aps /100 
+#gem_aps$inst_hc_aps <- gem_aps$inst_hc_aps /100 + 1
+#gem_aps$inst_sc_gem <- gem_aps$inst_sc_aps /100 + 1
 
 ```
 
 #Final GEM data
 
 ```{r}
+gem <- gem_nes
 #join nes and aps on country and year 
-gem <- left_join(gem_nes, gem_aps, by=c("country", "year", "code"))
-gem$inst_hc_gem <- rowMeans(gem[,c("inst_hc_nes", "inst_hc_aps")])
-
-gem <- gem %>%
-  select(code, country, year, ends_with('_gem'))
+#gem <- left_join(gem_nes, gem_aps, by=c("country", "year", "code"))
+#gem$inst_hc_gem <- rowMeans(gem[,c("inst_hc_nes", "inst_hc_aps")]) + 1
+#gem$inst_hc_gem <- gem$inst_hc_nes
+  
+#gem <- gem %>%
+  #select(code, country, year, ends_with('_gem'))
 
 gem$country[gem$country == "United States"] <-"USA"
 
 gem <- gem %>%
   group_by(country) %>%
-  mutate(inst_fc_gem = mean(inst_fc_gem, na.rm= TRUE),
-  inst_hc_gem = mean(inst_hc_gem, na.rm= TRUE),
-  inst_sc_gem = mean(inst_sc_gem, na.rm= TRUE),
-  inst_signaling_gem = mean(inst_signaling_gem, na.rm= TRUE))
+  mutate(inst_fc_gem = mean(inst_fc_gem, na.rm= TRUE))
+#  inst_hc_gem = mean(inst_hc_gem, na.rm= TRUE),
+  #inst_sc_gem = mean(inst_sc_gem, na.rm= TRUE),
+#  inst_signaling_gem = mean(inst_signaling_gem, na.rm= TRUE))
   
-gem <- select(gem, -year)
+#gem <- select(gem, -year, -inst_hc_nes)
 
 gem <- gem %>% distinct()
 
@@ -200,7 +203,8 @@ gem <- gem %>% distinct()
 gci <- import("Data/GCI_2018.xlsx")
 
 gci <- filter(gci, `Series Global ID` == "EOSQ089" |
-                   `Series Global ID` == "EOSQ425" )
+                   `Series Global ID` == "EOSQ425" |
+                   `Series Global ID` == "EOSQ109")
 gci <- filter(gci, Edition ==2018 )
 
 gci <- filter(gci, Attribute == "VALUE")
@@ -221,16 +225,19 @@ gci <- clean_names(gci)
 gci <- gci %>%
   pivot_wider(names_from = series_global_id, 
               values_from = score)
-preproc_gci <- preProcess(gci %>%
-                            select(starts_with("EOSQ"))
-                          , method=c("range"))
-gci <- predict(preproc_gci, gci)
+
+#preproc_gci <- preProcess(gci %>%
+#                           select(starts_with("EOSQ"))
+#                          , method=c("range"))
+#gci <- predict(preproc_gci, gci)
 
 
-gci$inst_fc_gci <- rowMeans(gci[,c('EOSQ425','EOSQ089')], na.rm = TRUE)
+#gci$inst_fc_gci <- rowMeans(gci[,c('EOSQ425','EOSQ089')], na.rm = TRUE) 
+
+#gci$inst_sc_gci <- gci$EOSQ109 
 
 
-gci <- select(gci, !starts_with('EOSQ'))
+#gci <- select(gci, !starts_with('EOSQ'))
 
 ```
 
@@ -283,7 +290,6 @@ gali <- filter(gali,
 
 ```{r}
 #Rank 1 shows the most important benefit (highest attention)
-#After normalizing, I will substract 1 and take absolute value to make sure higher value in range 0 to 1 goes to higher attention. This is to ensure that country and ventures variables move on the same directions, in order to construct a congurance level. 
 
 #Normalize Attention data (all data is based on a scale from 1 to 7)
 preproc_gali <- preProcess(gali %>%
@@ -294,36 +300,27 @@ gali <- predict(preproc_gali, gali)
 
 #Calculating the average of different benifits to group them into one of the 3 categories of capital plus signaling. 
 
-gali$attention_hc <- 1- round((rowMeans(gali[,
-                                  c('accel_ben_rank_business_skills',
-                                    'accel_ben_rank_mentorship')],
-                              na.rm=TRUE)),2)
+gali$attention_hc <- 1- round(gali$accel_ben_rank_business_skills,2)
 
 gali$attention_signaling <- 1- round((gali$accel_ben_rank_aware_cred),2)
 
 gali$attention_sc <- 1- round((rowMeans(gali[,
                                   c('accel_ben_rank_network',
-                                'accel_ben_rank_access_entreprene')],
-                              na.rm=TRUE)),2)
-  
-gali$attention_fc <- 1- round((rowMeans(gali[,
-                                c('accel_ben_rank_access_investors',
-                                  'accel_ben_rank_direct_funding')],
-                              na.rm=TRUE)),2)
+                                'accel_ben_rank_access_entreprene',
+                                'accel_ben_rank_access_investors')],
+                              na.rm=TRUE)),2) 
 
-#I will then mutiply this by the country index to measure the congruence level
+gali$attention_fc <- 1- round(gali$accel_ben_rank_direct_funding,2)
+
 ```
 
 
 
 #Join all 3 datasets 
 ```{r}
-gali_joined <- left_join(gali, gem, by = "country")
+gali_joined <- left_join(gali, gem, by = c("country", "year"))
 
 gali_joined <- left_join(gali_joined, gci, by = "country")
-
-#Checking if the two methods of measring institutional fc are correlated. We want them to be highly correlated 
-cor(gali_joined$inst_fc_gem, gali_joined$inst_fc_gci, use="complete.obs")
 
 ```
 
@@ -371,6 +368,22 @@ gali_joined <- gali_joined %>% mutate(revenue_tot = gali_joined %>%
 ```
 
 
+#Mixed model analysis 
+```{r}
+fit0 <- lmer(capital_raised_tot ~  attention_fc + (attention_fc|country), data = gali_joined, REML = F)
+
+fit1 <- lmer(capital_raised_tot ~ attention_fc + attention_fc*EOSQ425 + (1 |country), data = gali_joined, REML = F)
+
+fit2 <- lmer(capital_raised_tot ~ attention_fc + attention_fc*EOSQ089 + (1 |country), data = gali_joined, REML = F)
+
+fit3 <- lmer(capital_raised_tot ~ attention_fc + attention_fc*inst_fc_gem + (1 |country), data = gali_joined, REML = F)
+
+summary(fit2)
+
+```
+
+
+
 #Exploring with plots
 ```{r}
 ggplot(gali_joined, aes(inst_hc_gem,inst_fc_gem)) +
@@ -389,65 +402,65 @@ ggplot(gali_joined, aes(inst_hc_gem,inst_fc_gem)) +
 ```{r Human capital index}
 #Graduate percentage
 
-gali$founder1_grad = ifelse(gali$found_name1_education == "Masters Degree" | 
-                              gali$found_name1_education =="PhD" |
-                              gali$found_name1_education == "Some graduate degree", 1, 0) 
-gali$founder1_grad[is.na(gali$founder1_grad)] <- 0
+gali_joined$founder1_grad = ifelse(gali_joined$found_name1_education == "Masters Degree" | 
+                              gali_joined$found_name1_education =="PhD" |
+                              gali_joined$found_name1_education == "Some graduate degree", 1, 0) 
+gali_joined$founder1_grad[is.na(gali_joined$founder1_grad)] <- 0
 
-gali$founder2_grad = ifelse(gali$found_name2_education == "Masters Degree" | 
-                              gali$found_name2_education =="PhD" |
-                              gali$found_name2_education == "Some graduate degree", 1, 0) 
-gali$founder2_grad[is.na(gali$founder2_grad)] <- 0
+gali_joined$founder2_grad = ifelse(gali_joined$found_name2_education == "Masters Degree" | 
+                              gali_joined$found_name2_education =="PhD" |
+                              gali_joined$found_name2_education == "Some graduate degree", 1, 0) 
+gali_joined$founder2_grad[is.na(gali_joined$founder2_grad)] <- 0
 
-gali$founder3_grad = ifelse(gali$found_name3_education == "Masters Degree" |
-                              gali$found_name3_education =="PhD" |
-                              gali$found_name3_education == "Some graduate degree", 1, 0)
-gali$founder3_grad[is.na(gali$founder3_grad)] <- 0
+gali_joined$founder3_grad = ifelse(gali_joined$found_name3_education == "Masters Degree" |
+                              gali_joined$found_name3_education =="PhD" |
+                              gali_joined$found_name3_education == "Some graduate degree", 1, 0)
+gali_joined$founder3_grad[is.na(gali_joined$founder3_grad)] <- 0
 
-gali$nb_of_founders <- gali$found_name1_present + gali$found_name2_present + gali$found_name3_present
+gali_joined$nb_of_founders <- gali_joined$found_name1_present + gali_joined$found_name2_present + gali_joined$found_name3_present
 
-gali <- filter(gali, nb_of_founders > 0)
+gali_joined <- filter(gali_joined, nb_of_founders > 0)
 
-gali$grad_pct = ((gali$founder1_grad + gali$founder2_grad + gali$founder3_grad) / gali$nb_of_founders) 
+gali_joined$grad_pct = ((gali_joined$founder1_grad + gali_joined$founder2_grad + gali_joined$founder3_grad) / gali_joined$nb_of_founders) 
 
 #Prior C-level Executive Percentage
 
-gali$founder1_job1_clevel = ifelse(is.na(gali$found_name1_job1_role) | gali$found_name1_job1_role !=  "CEO/Executive Director" , 0, 1)
-gali$founder1_job2_clevel = ifelse(is.na(gali$found_name1_job2_role) | gali$found_name1_job2_role !=  "CEO/Executive Director" , 0, 1)
-gali$founder2_job1_clevel = ifelse(is.na(gali$found_name2_job1_role) | gali$found_name2_job1_role !=  "CEO/Executive Director" , 0, 1)
-gali$founder2_job2_clevel = ifelse(is.na(gali$found_name2_job2_role) | gali$found_name2_job2_role !=  "CEO/Executive Director" , 0, 1)
-gali$founder3_job1_clevel = ifelse(is.na(gali$found_name3_job1_role) | gali$found_name3_job1_role !=  "CEO/Executive Director" , 0, 1)
-gali$founder3_job2_clevel = ifelse(is.na(gali$found_name3_job2_role) | gali$found_name3_job2_role !=  "CEO/Executive Director" , 0, 1)
+gali_joined$founder1_job1_clevel = ifelse(is.na(gali_joined$found_name1_job1_role) | gali_joined$found_name1_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali_joined$founder1_job2_clevel = ifelse(is.na(gali_joined$found_name1_job2_role) | gali_joined$found_name1_job2_role !=  "CEO/Executive Director" , 0, 1)
+gali_joined$founder2_job1_clevel = ifelse(is.na(gali_joined$found_name2_job1_role) | gali_joined$found_name2_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali_joined$founder2_job2_clevel = ifelse(is.na(gali_joined$found_name2_job2_role) | gali_joined$found_name2_job2_role !=  "CEO/Executive Director" , 0, 1)
+gali_joined$founder3_job1_clevel = ifelse(is.na(gali_joined$found_name3_job1_role) | gali_joined$found_name3_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali_joined$founder3_job2_clevel = ifelse(is.na(gali_joined$found_name3_job2_role) | gali_joined$found_name3_job2_role !=  "CEO/Executive Director" , 0, 1)
 
-gali$prior_clevel_pct = ((gali$founder1_job1_clevel + gali$founder1_job2_clevel + gali$founder2_job1_clevel + 
-  gali$founder2_job2_clevel + gali$founder3_job1_clevel + gali$founder3_job2_clevel) / (gali$nb_of_founders*2)) 
+gali_joined$prior_clevel_pct = ((gali_joined$founder1_job1_clevel + gali_joined$founder1_job2_clevel + gali_joined$founder2_job1_clevel + 
+  gali_joined$founder2_job2_clevel + gali_joined$founder3_job1_clevel + gali_joined$founder3_job2_clevel) / (gali_joined$nb_of_founders*2)) 
 
 #Average Team Tenure
 
-gali$avg_teamtenure <- rowMeans(subset(gali, select = c('found_name1_job1_tenure', 'found_name1_job2_tenure', 'found_name2_job1_tenure', 'found_name2_job2_tenure', 'found_name3_job1_tenure', 'found_name3_job2_tenure')), na.rm = TRUE)  
+gali_joined$avg_teamtenure <- rowMeans(subset(gali_joined, select = c('found_name1_job1_tenure', 'found_name1_job2_tenure', 'found_name2_job1_tenure', 'found_name2_job2_tenure', 'found_name3_job1_tenure', 'found_name3_job2_tenure')), na.rm = TRUE)  
 
-gali$avg_teamtenure[is.nan(gali$avg_teamtenure)] <- 0
+gali_joined$avg_teamtenure[is.nan(gali_joined$avg_teamtenure)] <- 0
 
 #Team Prior Founding
-gali$team_prior_founding <- gali$found_name1_prior_fp + gali$found_name2_prior_fp + gali$found_name3_prior_fp + gali$found_name1_prior_other + gali$found_name2_prior_other + gali$found_name3_prior_other + gali$found_name1_prior_np + gali$found_name2_prior_np + gali$found_name3_prior_np 
+gali_joined$team_prior_founding <- gali_joined$found_name1_prior_fp + gali_joined$found_name2_prior_fp + gali_joined$found_name3_prior_fp + gali_joined$found_name1_prior_other + gali_joined$found_name2_prior_other + gali_joined$found_name3_prior_other + gali_joined$found_name1_prior_np + gali_joined$found_name2_prior_np + gali_joined$found_name3_prior_np 
 
 #Final Human Capital Index 
 
-gali$z_team_prior_founding <- scale(gali$team_prior_founding, center = TRUE, scale = TRUE)
-gali$z_prior_clevel_pct <- scale(gali$prior_clevel_pct, center = TRUE, scale = TRUE)
-gali$z_avg_teamtenure <- scale(gali$avg_teamtenure, center = TRUE, scale = TRUE)
-gali$z_grad_pct <- scale(gali$grad_pct, center = TRUE, scale = TRUE)
+gali_joined$z_team_prior_founding <- scale(gali_joined$team_prior_founding, center = TRUE, scale = TRUE)
+gali_joined$z_prior_clevel_pct <- scale(gali_joined$prior_clevel_pct, center = TRUE, scale = TRUE)
+gali_joined$z_avg_teamtenure <- scale(gali_joined$avg_teamtenure, center = TRUE, scale = TRUE)
+gali_joined$z_grad_pct <- scale(gali_joined$grad_pct, center = TRUE, scale = TRUE)
 
 #Cite Bolstad et al, Bioinformatics (2003) 
 
-gali$normq_team_prior_founding <- normalize.quantiles(gali$z_team_prior_founding,copy=TRUE)
-gali$normq_prior_clevel_pct <- normalize.quantiles(gali$z_prior_clevel_pct,copy=TRUE)
-gali$normq_avg_teamtenure <- normalize.quantiles(gali$z_avg_teamtenure,copy=TRUE)
-gali$normq_grad_pct <- normalize.quantiles(gali$z_grad_pct,copy=TRUE)
+gali_joined$normq_team_prior_founding <- normalize.quantiles(gali_joined$z_team_prior_founding,copy=TRUE)
+gali_joined$normq_prior_clevel_pct <- normalize.quantiles(gali_joined$z_prior_clevel_pct,copy=TRUE)
+gali_joined$normq_avg_teamtenure <- normalize.quantiles(gali_joined$z_avg_teamtenure,copy=TRUE)
+gali_joined$normq_grad_pct <- normalize.quantiles(gali_joined$z_grad_pct,copy=TRUE)
 
 #group all into an index 
 
-gali$HC_index <- (gali$normq_team_prior_founding + gali$normq_prior_clevel_pct + gali$normq_avg_teamtenure + gali$normq_grad_pct) 
+gali_joined$HC_index <- (gali_joined$normq_team_prior_founding + gali_joined$normq_prior_clevel_pct + gali_joined$normq_avg_teamtenure + gali_joined$normq_grad_pct) 
 
 ```
 
