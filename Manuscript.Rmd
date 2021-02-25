@@ -1,0 +1,478 @@
+---
+title             : "The title"
+shorttitle        : "Title"
+
+author: 
+  - name          : "Ouafaa Hmaddi"
+    affiliation   : "1"
+    corresponding : yes    # Define only one corresponding author
+    address       : "Postal address"
+    email         : "ohmaddi@uoregon.edu"
+    role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
+      - Conceptualization
+      - Writing - Original Draft Preparation
+      - Writing - Review & Editing
+
+affiliation:
+  - id            : "1"
+    institution   : "University of Oregon"
+
+authornote: |
+  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+
+  Enter author note here.
+
+abstract: |
+  One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
+  
+  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
+  
+  One sentence clearly stating the **general problem** being addressed by  this particular study.
+  
+  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
+  
+  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
+  
+  One or two sentences to put the results into a more **general context**.
+  
+  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
+  
+  <!-- https://tinyurl.com/ybremelq -->
+  
+keywords          : "keywords"
+wordcount         : "X"
+
+bibliography      : ["r-references.bib"]
+
+floatsintext      : no
+figurelist        : no
+tablelist         : no
+footnotelist      : no
+linenumbers       : yes
+mask              : no
+draft             : no
+
+documentclass     : "apa6"
+classoption       : "man"
+output            : papaja::apa6_pdf
+---
+
+```{r setup, include = FALSE}
+library("papaja")
+r_refs("r-references.bib")
+```
+
+```{r analysis-preferences}
+# Seed for random number generation
+set.seed(42)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+```
+
+
+
+# Methods
+We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+
+## Participants
+
+## Material
+
+## Procedure
+
+## Data analysis
+We used `r cite_r("r-references.bib")` for all our analyses.
+```{r message=FALSE, warning=FALSE, include=FALSE}
+library(rio)
+library(tidyverse)
+library(janitor)
+library(ggplot2)
+library(psych)
+library(knitr)
+
+```
+
+```{r Countries to analyse in main sample, message=FALSE, warning=FALSE, include=FALSE}
+gali <- import("Data/GALI_External_DataRelease_2020.xlsx") 
+
+count(gali,info_venture_country_hq)
+
+#Removing countries with less than 6 ventures. 
+
+countries_to_keep <- gali %>% 
+  group_by(gali$info_venture_country_hq) %>%
+  summarize(Count=n()) %>%
+  mutate(Percent = round((Count/sum(Count)*100))) %>%
+  arrange(desc(Count))
+
+countries_to_keep <- filter(countries_to_keep, `gali$info_venture_country_hq` != 'NA')
+
+countries_to_keep <- filter(countries_to_keep, Count >9)
+countries_to_keep$`gali$info_venture_country_hq`
+
+gali <- gali %>%
+  filter(info_venture_country_hq  %in% countries_to_keep$`gali$info_venture_country_hq`)
+
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali <- filter(gali, found_name1_age > 14 | is.na(found_name1_age))
+gali <- filter(gali, found_name2_age > 14 | is.na(found_name2_age))
+gali <- filter(gali, found_name3_age > 14 | is.na(found_name3_age))
+gali <- filter(gali, found_name1_age < 70 | is.na(found_name1_age))
+gali <- filter(gali, found_name2_age < 70 | is.na(found_name2_age))
+gali <- filter(gali, found_name3_age < 70 | is.na(found_name3_age))
+
+#Keep only for porfit firms 
+gali <- filter(gali, info_legal_status == "For-profit company" ) 
+
+
+#firms that are 5 years or younger when they entered the acceleration program (when data was collected)
+
+if (gali$application_year == 2013) { gali <- filter(gali, info_founding_year > 2007)
+}  else if (gali$application_year == 2014) {gali <- filter(gali, info_founding_year > 2008)
+} else if (gali$application_year == 2015) {gali <- filter(gali, info_founding_year > 2009)
+}  else if (gali$application_year == 2016) {gali <- filter(gali, info_founding_year > 2010)
+} else if (gali$application_year == 2017) {gali <- filter(gali, info_founding_year > 2011)
+}  else gali <- filter(gali, info_founding_year > 2012)
+```
+
+```{r Countries to keep in sample with valid data, message=FALSE, warning=FALSE, include=FALSE}
+
+gali <- gali %>%
+  rename(country = info_venture_country_hq) %>%
+  rename(year = program_year)
+
+gali$country[gali$country == "United States of America"] <-"USA"
+gali$country[gali$country == "Tanzania, United Republic of"] <-"Tanzania"
+
+countries_to_keep <- gali %>% 
+  group_by(gali$country) %>%
+  summarize(Count=n()) %>%
+  mutate(Percent = round((Count/sum(Count)*100))) %>%
+  arrange(desc(Count))
+
+countries_to_keep <- filter(countries_to_keep, `gali$country` != 'NA')
+
+countries_to_keep <- filter(countries_to_keep, Count >9)
+countries_to_keep$`gali$country`
+
+gali <- gali %>%
+  filter(country  %in% countries_to_keep$`gali$country`)
+
+
+```
+
+#CGI data
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gci <- import("Data/GCI_2018.xlsx")
+
+gci <- filter(gci, `Series Global ID` == "EOSQ089" |
+                   `Series Global ID` == "EOSQ425" |
+                   `Series Global ID` == "EOSQ109" |
+                   `Series Global ID` == "DOMCREDITGDP" |
+                   `Series Global ID` == "EOSQ403")
+gci <- filter(gci, Edition ==2018 )
+
+gci <- filter(gci, Attribute == "VALUE")
+gci <- select(gci, -c("Index", "Edition", "Freeze date", "Series units", "Series order", "Series code (if applicable)", "Attribute", "Series name"))
+
+gci <- gci %>%
+  gather(country, score, -`Series Global ID`) 
+
+gci$country[gci$country == "United States"] <-"USA"
+
+gci <- gci %>%
+  filter(country  %in% countries_to_keep$`gali$country`)
+
+gci$score <- round(as.numeric(gci$score),2)
+
+gci <- clean_names(gci)
+
+gci <- gci %>%
+  pivot_wider(names_from = series_global_id, 
+              values_from = score)
+```
+
+#Plotting all countries along the 3 dimensions 
+
+```{r echo=FALSE, fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
+
+library(plot3D)
+
+with(gci, text3D(EOSQ403, EOSQ425, EOSQ109, 
+  labels = gci$country,  
+  col = gg.col(100), theta = 60, phi = 20,
+  xlab = "Human capital", ylab = "Financail capital", zlab = "Social capital", 
+  main = "Institutional level resources", cex = 0.6, 
+  bty = "g", ticktype = "detailed", d = 2,
+  clab = c("Urban","Pop"), adj = 1, font = 1.5))
+
+#Zoom into to the middle for more clarity 
+plotdev(xlim = c(3, 4), ylim = c(3, 5.5), 
+         zlim = c(3, 3.8))
+
+```
+
+#Attention to capital - venture data
+
+```{r Cleaning data of acceleration benefit ranking, message=FALSE, warning=FALSE, include=FALSE}
+
+#Removing ventures that ranked benefits outside of given scale (i.e. 1 to 7)
+
+gali <- filter(gali, accel_ben_rank_network <= 7 & accel_ben_rank_business_skills
+<= 7 & accel_ben_rank_mentorship <= 7 & accel_ben_rank_access_investors <= 7 & accel_ben_rank_direct_funding <= 7 & accel_ben_rank_access_entreprene <= 7 & accel_ben_rank_aware_cred <= 7 ) 
+
+#Removing ventures that gave the same ranking to two or more benefits 
+gali <- filter(gali, 
+               accel_ben_rank_network != accel_ben_rank_business_skills &
+                 accel_ben_rank_network != accel_ben_rank_mentorship & 
+                 accel_ben_rank_network != accel_ben_rank_access_investors &
+                 accel_ben_rank_network != accel_ben_rank_direct_funding &
+                 accel_ben_rank_network != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_network != accel_ben_rank_aware_cred ) 
+
+gali <- filter(gali, 
+                 accel_ben_rank_business_skills != accel_ben_rank_mentorship & 
+              accel_ben_rank_business_skills != accel_ben_rank_access_investors &
+                 accel_ben_rank_business_skills != accel_ben_rank_direct_funding &
+              accel_ben_rank_business_skills != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_business_skills != accel_ben_rank_aware_cred ) 
+
+gali <- filter(gali, 
+                accel_ben_rank_mentorship != accel_ben_rank_access_investors &
+                 accel_ben_rank_mentorship != accel_ben_rank_direct_funding &
+                 accel_ben_rank_mentorship != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_mentorship != accel_ben_rank_aware_cred ) 
+
+gali <- filter(gali, 
+              accel_ben_rank_access_investors != accel_ben_rank_direct_funding &
+            accel_ben_rank_access_investors != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_access_investors != accel_ben_rank_aware_cred ) 
+
+gali <- filter(gali, 
+              accel_ben_rank_direct_funding != accel_ben_rank_access_entreprene &
+                 accel_ben_rank_direct_funding != accel_ben_rank_aware_cred )
+
+gali <- filter(gali, 
+              accel_ben_rank_access_entreprene != accel_ben_rank_aware_cred )
+
+```
+
+#Reverse code attention variable 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#Reverse code fundtion 
+reverse <- function(x){x*-1- +8}
+
+gali_att <- as.data.frame(lapply(gali %>%
+                            select(starts_with("accel_ben_rank_")), reverse))
+
+gali <- cbind(gali %>%
+        select(-starts_with("accel_ben_rank_")), gali_att)
+
+```
+
+
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+mean_norm_minmax <- function(x){
+                                (x- mean(x)) /(max(x)-min(x))
+                               }
+
+mean_norm_att <- as.data.frame(lapply(gali %>%
+                            select(starts_with("accel_ben_rank_")), mean_norm_minmax))
+
+gali <- cbind(gali %>%
+        select(-starts_with("accel_ben_rank_")), mean_norm_att)
+```
+
+
+
+#Join all 3 datasets 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+
+gali_joined <- left_join(gali, gci, by = "country")
+
+```
+
+#Fiancial Capital acquisiton total
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali_joined  <- gali_joined %>% mutate(capital_raised0 = gali_joined %>% select(starts_with("inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali_joined  <- gali_joined %>% mutate(capital_raised1 = gali_joined %>% select(starts_with("fu1inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali_joined  <- gali_joined %>% mutate(capital_raised2 = gali_joined %>% select(starts_with("fu2inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali_joined  <- gali_joined %>% mutate(capital_raised3 = gali_joined %>% select(starts_with("fu3inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali_joined  <- gali_joined %>% mutate(capital_raised4 = gali_joined %>% select(starts_with("fu4inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali_joined  <- gali_joined %>% mutate(capital_raised_tot = gali_joined %>% select(starts_with("capital_raised")) %>% 
+                         rowSums(na.rm = TRUE))
+
+```
+
+
+#Revenues
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali_joined <- gali_joined %>% mutate(revenue_tot = gali_joined %>%
+                         select(contains("revenues")) %>% 
+                         rowSums(na.rm = TRUE))
+```
+
+#Human capital acquisition 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali_joined  <- gali_joined %>% mutate(hr_tot = gali_joined %>%
+                         select(contains("_employees")) %>% 
+                         rowSums(na.rm = TRUE))
+```
+
+#Social capital acquisition 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali_joined <- gali_joined %>% mutate(equity_sources_tot = gali_joined %>%
+                         select(contains("equityfrom")) %>% 
+                         rowSums(na.rm = TRUE))
+```
+
+# Results
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#Function to extract coefficients of summary table
+
+summary_table <- function(x){ x$coefficients %>%
+  as.data.frame %>%
+    rename(
+      "$b$" = "Estimate"
+    , "SE" = "Std. Error"
+    , "$t$" = "t value"
+  ) %>%
+  mutate(
+    Effect = papaja:::prettify_terms(rownames(.))
+  ) %>%
+  printnum(
+    digits = c(2, 2, 2, 3)
+    , gt1 = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
+    , zero = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
+  ) %>%
+  select(Effect, `$b$`, `SE`, `$t$`)}
+
+#for glmer
+
+summary_table_z <- function(x){ x$coefficients %>%
+  as.data.frame %>%
+    rename(
+      "$b$" = "Estimate"
+    , "SE" = "Std. Error"
+    , "$z$" = "z value"
+  ) %>%
+  mutate(
+    Effect = papaja:::prettify_terms(rownames(.))
+  ) %>%
+  printnum(
+    digits = c(2, 2, 2, 3)
+    , gt1 = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
+    , zero = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
+  ) %>%
+  select(Effect, `$b$`, `SE`, `$z$`)}
+
+```
+
+
+#Mixed model analysis - Human capital
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(lme4)
+fit0hc <- glmer(participated ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country), data = gali_joined, family=binomial)
+
+fit1hc <- glmer(participated ~  accel_ben_rank_business_skills*EOSQ403 + (accel_ben_rank_business_skills|country), data = gali_joined, family=binomial)
+
+fit00hc <- lmer(hr_tot ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country), data = gali_joined, REML = F)
+
+fit11hc <- lmer(hr_tot ~  accel_ben_rank_business_skills*EOSQ403 + (accel_ben_rank_business_skills|country), data = gali_joined, REML = F)
+hc0 <- summary_table_z(summary(fit0hc))
+hc1 <- summary_table_z(summary(fit1hc))
+hc00 <- summary_table(summary(fit00hc))
+hc11 <- summary_table(summary(fit11hc))
+
+rownames(hc0) <- c("Intercept","Attention to Human capital(AHC)")
+rownames(hc1) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
+rownames(hc00) <- c("Intercept","Attention to Human capital")
+rownames(hc11) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
+
+kable(hc0[,-1]) 
+kable(hc1[,-1])
+kable(hc00[,-1])
+kable(hc11[,-1])
+
+```
+
+#Mixed model analysis - Financial capital
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+library(lme4)
+fit0fc <- glmer(participated ~  accel_ben_rank_direct_funding + (accel_ben_rank_direct_funding|country), data = gali_joined, family=binomial)
+
+fit1fc <- glmer(participated ~ accel_ben_rank_direct_funding*EOSQ425 + (accel_ben_rank_direct_funding |country ), data = gali_joined, family=binomial)
+
+fit2fc <- glmer(participated ~ accel_ben_rank_direct_funding*EOSQ089 + (accel_ben_rank_direct_funding |country ), data = gali_joined, family=binomial)
+
+fit3fc <- glmer(participated ~ accel_ben_rank_direct_funding*DOMCREDITGDP + (accel_ben_rank_direct_funding |country), data = gali_joined, family=binomial)
+
+summary(fit0fc)
+summary(fit1fc)
+summary(fit2fc)
+summary(fit3fc)
+
+fit00fc <- lmer(capital_raised_tot ~   + (accel_ben_rank_direct_funding|country), data = gali_joined, REML = F)
+
+fit11fc <- lmer(capital_raised_tot ~ accel_ben_rank_direct_funding*EOSQ425 + (accel_ben_rank_direct_funding |country ), data = gali_joined, REML = F)
+
+fit22fc <- lmer(capital_raised_tot ~ accel_ben_rank_direct_funding*EOSQ089 + (accel_ben_rank_direct_funding |country ), data = gali_joined, REML = F)
+
+fit33fc <- lmer(capital_raised_tot ~ accel_ben_rank_direct_funding*DOMCREDITGDP + (accel_ben_rank_direct_funding |country), data = gali_joined, REML = F)
+
+summary(fit00fc)
+summary(fit11fc)
+summary(fit22fc)
+summary(fit33fc)
+
+```
+
+#Mixed model analysis - Social capital
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+fit0sc <- lmer(participated ~ accel_ben_rank_network + (accel_ben_rank_network |country), data = gali_joined, REML = F)
+
+fit1sc <- lmer(participated ~ accel_ben_rank_network*EOSQ109 + (accel_ben_rank_network | country), data = gali_joined, REML = F)
+
+coef(summary(fit0sc))
+coef(summary(fit1sc))
+
+
+
+fit00sc <- lmer(equity_sources_tot ~ accel_ben_rank_network + (accel_ben_rank_network |country), data = gali_joined, REML = F)
+
+fit11sc <- lmer(equity_sources_tot ~ accel_ben_rank_network*EOSQ109 + (accel_ben_rank_network | country), data = gali_joined, REML = F)
+
+coef(summary(fit00sc))
+coef(summary(fit11sc))
+
+```
+
+
+# Discussion
+
+
+\newpage
+
+# References
+
+\begingroup
+\setlength{\parindent}{-0.5in}
+\setlength{\leftskip}{0.5in}
+
+<div id="refs" custom-style="Bibliography"></div>
+\endgroup
