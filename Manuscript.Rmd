@@ -1,12 +1,12 @@
 ---
-title             : "The title"
-shorttitle        : "Title"
+title             : "An institutional approach to attention allocation and venture resource mobilization and acquisition"
+shorttitle        : "An institutional approach to venture attention allocation"
 
 author: 
   - name          : "Ouafaa Hmaddi"
     affiliation   : "1"
     corresponding : yes    # Define only one corresponding author
-    address       : "Postal address"
+    address       : "292A Anstett"
     email         : "ohmaddi@uoregon.edu"
     role:         # Contributorship roles (e.g., CRediT, https://casrai.org/credit/)
       - Conceptualization
@@ -18,29 +18,17 @@ affiliation:
     institution   : "University of Oregon"
 
 authornote: |
-  Add complete departmental affiliations for each author here. Each new line herein must be indented, like this line.
+  Lundquist College of Business 
 
-  Enter author note here.
+  Department of Management 
 
 abstract: |
   One or two sentences providing a **basic introduction** to the field,  comprehensible to a scientist in any discipline.
   
-  Two to three sentences of **more detailed background**, comprehensible  to scientists in related disciplines.
-  
-  One sentence clearly stating the **general problem** being addressed by  this particular study.
-  
-  One sentence summarizing the main result (with the words "**here we show**" or their equivalent).
-  
-  Two or three sentences explaining what the **main result** reveals in direct comparison to what was thought to be the case previously, or how the  main result adds to previous knowledge.
-  
-  One or two sentences to put the results into a more **general context**.
-  
-  Two or three sentences to provide a **broader perspective**, readily comprehensible to a scientist in any discipline.
   
   <!-- https://tinyurl.com/ybremelq -->
   
-keywords          : "keywords"
-wordcount         : "X"
+keywords          : "attention, resources, institutional capital, accelerators"
 
 bibliography      : ["r-references.bib"]
 
@@ -68,19 +56,62 @@ set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
 ```
 
+# Introduction 
+Early stage entrepreneurs are faced with a range of resource choices to seek, and must decide what should garner their attention. The literature on entrepreneurial resources argues the resources entrepreneurs possess shape their resource acquisition and once they raise one resource others follow. Thus, one might theorize that founders should focus their attention on the resource they can leverage based on their existing resource endowment. However, resource acquisition depends on both entrepreneurs’ resource endowment and the institutional-level capital. Both are indispensable antecedents that affect the mobilization and acquisition of additional capital. 
+
+The value of a resource varies with its institutional context [@holburn2010political]. On the one hand, strong institutions can increase the value of a resource by streamlining access to complementary external resources [@khanna2001estimating; @north1990institutions]. For example, in countries with strong financing infrastructure, acquiring financing can streamline accessing other resources and thus it would make sense to focus on raising capital at venture’s earliest stages. On the other hand, resources such as legitimation or social capital can substitute for the weak institutions and capital infrastructure, thereby increasing in value when institutions are weak [@khanna1997focused; @kock2001strategy]. Therefore, the broader environment can enhance or inhibit the optimal use of the endowed resource capital. I posit that an examination of both the venture and its broader institutional environment would give us more insights about where founders attention should be allocated. Specifically, I hypothesize that the institutional-level capital positively moderates the relationship between a founder’s attention and its subsequent resource mobilization and acquisition. For example, attention to human capital is more positively related to a higher number of employees in contexts in which it has higher intuitional-level human capital. This similarly applies to social capital, and financial capital as the types of resources sought by entrepreneurs. Thus, in this paper I seek to examine the following research question: How does the alignment of the institutional context and the allocation of entrepreneurial attention toward specific resources influence the venture’s resource mobilization and acquisition? 
+
+# Hypotheses Development 
+At the heart of the intersection between resource acquisition and the institutional context is entrepreneurial attention, that is, founders’ attention allocation to resources. Bounded by their limited attentional capacities, entrepreneurs cannot attend to all the resources; rather, they focus on some resources but must ignore others. Where they focus their attention determines the propensity of mobilizing and acquiring resources. A venture could miss the chance to exploit an opportunity of resources acquisition if that opportunity never appears on the entrepreneur’s radar screens because they are too focused on an alternative resource. For example, a voluntary work with potential partners who are well connected to other investors might be missed because the founder is too focused on raising capital by honing their business plan over and over and even paying accounting boutique firms to develop that business plan for them. 
+
+Thus, selective attention plays a crucial role in both individual and organizational behavior because it bounds individual rationality and determines the menu of available actions [@simon1947comment]. The debate over which resource should garner the entrepreneur’s attention concludes that the founding team resource endowment is the key factor that influences resource acquisition. For instance, scholars argue that founding teams with a more ties to potential investors are more likely to gain funding [@shane2002organizational]. Furthermore, if we focus on the findings of the stream of research examining the performance implications of acquiring financial capital [@hochberg2007whom] we would expect that early-stage financing should be most likely to garner founders’ attention. However, the role of the institutional context has been ignored and neglected in this debate. I argue that selective attention allocation depends on both entrepreneur’s resource endowment and institutional capital.
+
+Therefore, I state the following hypotheses about the relationship between the congruence level of the entrepreneurs' attention to resources and the institutional level capital, and the venture's resource mobilization, acquisition, and performance. 
+
+**Hypothesis 1** *The higher the level of congruency of venture’s attention to a resource and its institutional level capital, the higher the odds of mobilization that resource* 
+
+**Hypothesis 2** *The higher the level of congruency of venture’s attention to a resource and its institutional level capital, the higher the level of the accumulated resource* 
+
+**Hypothesis 3** *The higher the level of congruency of venture’s attention to a resource and its institutional level capital, the higher the venture performance* 
 
 
-# Methods
-We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study. <!-- 21-word solution (Simmons, Nelson & Simonsohn, 2012; retrieved from http://ssrn.com/abstract=2160588) -->
+# Analysis
 
-## Participants
+## Measures
 
-## Material
+*Predictors*
+*Outcomes*
+*Control Variables*
+**Human Capital Index** consists of educational attainment, prior career experience in executive positions (C-level positions), team tenure, and prior founding experience [@colombo2005founders; @dimov2005human; @estrin2016human]. I measure the educational attainment of a founding team by calculating the percentage of founders with a graduate degree in the founding team (Graduate Percentage). Prior career experience in C-level executive positions (Prior C-level Executive Percentage) is measured by the percentage of founders in the founding teams holding C-level executive positions prior to the current venture. Average Team Tenure measures the average working years of the founding team members. Team Prior Founding measures the number of organizations founded by the founding team before the current venture.
 
-## Procedure
+To create an index, I use the quantile normalization technique to reduce the effect of extreme values while preserving the sequence of an observation in each variable [@hansen2012removing]. Quantile normalization makes two or more distributions identical in statistical properties, such as maximum, minimum, and mean, without a reference distribution. It maintains the order, namely quantile, of observations in each variable treated but the values are normalized with respect to values from other variables at the same quantile. After doing so, the extreme values observed in some variables are smoothed out while the order is preserved, allowing us to explore the effect of each variable more accurately. I first z-standardize the above-mentioned variables. Then, I use the {preprocessCore} package to conduct quantile normalization by sets of variables. I then rescale the index to a range between 0 and 1.
+
+**Gender Decomposition**
+
+## Data
+The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information – collected during program applications – about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at [GALI Data](www.galidata.org/data-request).
+
+This is multi-country dataset. It typically contain hundreds of ventures per country. 
+
+When entrepreneurs apply to a GALI-participating accelerator, they are asked to complete a standardized survey which asks basic questions about their venture’s business model, financial performance, and founding team. Then, after one year, they are asked to complete a follow-up survey, whether or not they were accepted into the program to which they applied. 
+
+All financial statistics are in United States Dollars (USD).
+
+Table 1: Ventures in sample, by country of operation and survey responses
+
+
+## Methods
+Mixed-effects logit and probit 
+
+Given the structure of the data I used a model that incorporates both fixed- and random-effects terms. This helps me take into account the institutional (i.e. country) effect on venture outcomes and quantify the extent to which differences in outcomes reflect differences in the effects of country-specific features, specifically institutional level capital. 
+
+yic=Xicβ+Zcγ+uc+εic,  withi=1,…,Nc;c=1,…,C.
+
+Outcome y ic for each person i in country c is assumed to depend on observed predictors and unobserved factors. Xic contains variables that summarize individual-level characteristics such as age, education, or marital status; Zc contains variables summarizing country-level features such as socio-economic institutions or labour markets. There are also unobserved individual effects ( ε ic ) and country effects ( u c ), each assumed to be normally distributed and uncorrelated with Xic and Zc . We suppose the researcher has available a data set with a large number of individuals for each country ( N c is typically in the thousands) sampled from each of a small number of countries ( C is typically less than 30). The parameters associated with the observed predictors β and γ are sometimes called ‘fixed’ regression parameters to distinguish them from the parameters characterizing the joint distribution of the random terms ε ic and u c (their variances σ2ε and σ2u ). These variances are often referred to as ‘random effect’ parameters or ‘variance components’.
+
 
 ## Data analysis
-We used `r cite_r("r-references.bib")` for all our analyses.
+I used `r cite_r("r-references.bib")` for all our analyses.
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 library(rio)
 library(tidyverse)
@@ -88,12 +119,13 @@ library(janitor)
 library(ggplot2)
 library(psych)
 library(knitr)
+library(preprocessCore)
 
 ```
 
 ```{r Countries to analyse in main sample, message=FALSE, warning=FALSE, include=FALSE}
 gali <- import("Data/GALI_External_DataRelease_2020.xlsx") 
-
+wb <- import("Data/CLASS.xls")
 count(gali,info_venture_country_hq)
 
 #Removing countries with less than 6 ventures. 
@@ -258,16 +290,223 @@ gali <- filter(gali,
 
 ```
 
+##Control variables 
+
+##Constrcuting human capital index (control variable)
+###Graduate percentage, Prior C-level Executive Percentage, Average Team Tenure , Team Prior Founding 
+
+```{r Human capital index}
+#Graduate percentage
+
+gali$founder1_grad = ifelse(gali$found_name1_education == "Masters Degree" | 
+                              gali$found_name1_education =="PhD" |
+                              gali$found_name1_education == "Some graduate degree", 1, 0) 
+gali$founder1_grad[is.na(gali$founder1_grad)] <- 0
+
+gali$founder2_grad = ifelse(gali$found_name2_education == "Masters Degree" | 
+                              gali$found_name2_education =="PhD" |
+                              gali$found_name2_education == "Some graduate degree", 1, 0) 
+gali$founder2_grad[is.na(gali$founder2_grad)] <- 0
+
+gali$founder3_grad = ifelse(gali$found_name3_education == "Masters Degree" |
+                              gali$found_name3_education =="PhD" |
+                              gali$found_name3_education == "Some graduate degree", 1, 0)
+gali$founder3_grad[is.na(gali$founder3_grad)] <- 0
+
+gali$nb_of_founders <- gali$found_name1_present + gali$found_name2_present + gali$found_name3_present
+
+gali <- filter(gali, nb_of_founders > 0)
+
+gali$grad_pct = ((gali$founder1_grad + gali$founder2_grad + gali$founder3_grad) / gali$nb_of_founders) 
+
+#Prior C-level Executive Percentage
+
+gali$founder1_job1_clevel = ifelse(is.na(gali$found_name1_job1_role) | gali$found_name1_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder1_job2_clevel = ifelse(is.na(gali$found_name1_job2_role) | gali$found_name1_job2_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder2_job1_clevel = ifelse(is.na(gali$found_name2_job1_role) | gali$found_name2_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder2_job2_clevel = ifelse(is.na(gali$found_name2_job2_role) | gali$found_name2_job2_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder3_job1_clevel = ifelse(is.na(gali$found_name3_job1_role) | gali$found_name3_job1_role !=  "CEO/Executive Director" , 0, 1)
+gali$founder3_job2_clevel = ifelse(is.na(gali$found_name3_job2_role) | gali$found_name3_job2_role !=  "CEO/Executive Director" , 0, 1)
+
+gali$prior_clevel_pct = ((gali$founder1_job1_clevel + gali$founder1_job2_clevel + gali$founder2_job1_clevel + 
+  gali$founder2_job2_clevel + gali$founder3_job1_clevel + gali$founder3_job2_clevel) / (gali$nb_of_founders*2)) 
+
+#Average Team Tenure
+
+gali$avg_teamtenure <- rowMeans(subset(gali, select = c('found_name1_job1_tenure', 'found_name1_job2_tenure', 'found_name2_job1_tenure', 'found_name2_job2_tenure', 'found_name3_job1_tenure', 'found_name3_job2_tenure')), na.rm = TRUE)  
+
+gali$avg_teamtenure[is.nan(gali$avg_teamtenure)] <- 0
+
+#Team Prior Founding
+gali$team_prior_founding <- gali$found_name1_prior_fp + gali$found_name2_prior_fp + gali$found_name3_prior_fp + gali$found_name1_prior_other + gali$found_name2_prior_other + gali$found_name3_prior_other + gali$found_name1_prior_np + gali$found_name2_prior_np + gali$found_name3_prior_np 
+
+#Final Human Capital Index 
+
+gali$z_team_prior_founding <- scale(gali$team_prior_founding, center = TRUE, scale = TRUE)
+gali$z_prior_clevel_pct <- scale(gali$prior_clevel_pct, center = TRUE, scale = TRUE)
+gali$z_avg_teamtenure <- scale(gali$avg_teamtenure, center = TRUE, scale = TRUE)
+gali$z_grad_pct <- scale(gali$grad_pct, center = TRUE, scale = TRUE)
+
+#Cite Bolstad et al, Bioinformatics (2003) 
+
+gali$normq_team_prior_founding <- normalize.quantiles(gali$z_team_prior_founding,copy=TRUE)
+gali$normq_prior_clevel_pct <- normalize.quantiles(gali$z_prior_clevel_pct,copy=TRUE)
+gali$normq_avg_teamtenure <- normalize.quantiles(gali$z_avg_teamtenure,copy=TRUE)
+gali$normq_grad_pct <- normalize.quantiles(gali$z_grad_pct,copy=TRUE)
+
+#group all into an index 
+
+gali$HC_index <- (gali$normq_team_prior_founding + gali$normq_prior_clevel_pct + gali$normq_avg_teamtenure + gali$normq_grad_pct) 
+
+```
+
+##Gender decomposition variable 
+
+```{r Gender decomposition variable}
+gali <- gali %>% drop_na(found_name1_gender)
+
+gali$found_name2_gender[is.na(gali$found_name2_gender)] <- 0
+gali$found_name3_gender[is.na(gali$found_name3_gender)] <- 0
+
+gali$founder1_f <- ifelse(gali$found_name1_gender == "F", 1,0)
+gali$founder2_f <- ifelse(gali$found_name2_gender == "F", 1,0)
+gali$founder3_f <- ifelse(gali$found_name3_gender == "F", 1,0)
+
+gali$female_pct <- round(((gali$founder1_f + gali$founder2_f + gali$founder3_f) / gali$nb_of_founders ), 2)
+
+```
+
 #Reverse code attention variable 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 #Reverse code fundtion 
-reverse <- function(x){x*-1- +8}
+reverse <- function(x){x*-1 +8}
 
 gali_att <- as.data.frame(lapply(gali %>%
                             select(starts_with("accel_ben_rank_")), reverse))
 
 gali <- cbind(gali %>%
         select(-starts_with("accel_ben_rank_")), gali_att)
+
+```
+
+
+#Distribution of attention 
+
+```{r fig.height=5, fig.width=8}
+a <- gali %>%
+  select(country, starts_with("accel_ben_rank_")) 
+
+colnames(a) <- c( "Country", "Network", "Business Skills", "Mentorship", "Investors", "Direct Funding", "Peers", "Credibility") 
+
+a <- left_join(a, wb, by = "Country" )
+
+a <- a %>%
+  pivot_longer(!c("Country", "Region","Income group"), names_to = "Attention", values_to = "Score")
+
+a[is.na(a)] <- "High Income"  #The two countries with NA values are USA and UK because of naming issues. They are both classified high income
+
+a  %>%
+  ggplot(aes(Score)) +
+  geom_bar() +
+  facet_grid(~Attention) +
+  theme_bw()
+
+#Some countries are classified as "High income" while other are "High Income". I will capitilize all first letter to solve this issue
+
+simpleCap <- function(x) {
+  s <- strsplit(x, " ")[[1]]
+  paste(toupper(substring(s, 1,1)), substring(s, 2),
+      sep="", collapse=" ")
+}
+
+
+a$`Income group` <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", a$`Income group`, perl=TRUE)
+
+a  %>%
+  ggplot(aes(Score)) +
+  geom_bar() +
+  facet_grid(vars(`Income group`), vars(Attention)) +
+  theme_bw() 
+
+```
+
+##Outcomes 
+
+#Revenues
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali <- gali %>% mutate(revenue_tot = gali %>%
+                         select(contains("revenues")) %>% 
+                         rowSums(na.rm = TRUE))
+```
+
+#Human capital acquisition 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali  <- gali %>% mutate(hr_tot = gali %>%
+                         select(contains("_employees")) %>% 
+                         rowSums(na.rm = TRUE))
+```
+
+#Social capital acquisition 
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali <- gali %>% mutate(equity_sources_tot = gali %>%
+                         select(contains("equityfrom")) %>% 
+                         rowSums(na.rm = TRUE))
+```
+
+#Fiancial Capital acquisiton total
+```{r message=FALSE, warning=FALSE, include=FALSE}
+gali  <- gali %>% mutate(capital_raised0 = gali %>% select(starts_with("inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali  <- gali %>% mutate(capital_raised1 = gali %>% select(starts_with("fu1inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali  <- gali %>% mutate(capital_raised2 = gali %>% select(starts_with("fu2inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali  <- gali %>% mutate(capital_raised3 = gali %>% select(starts_with("fu3inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali  <- gali %>% mutate(capital_raised4 = gali %>% select(starts_with("fu4inv_") & ends_with("_m1")) %>% 
+                         rowSums(na.rm = TRUE))
+
+gali  <- gali %>% mutate(capital_raised_tot = gali %>% select(starts_with("capital_raised")) %>% 
+                         rowSums(na.rm = TRUE))
+
+```
+
+
+#Predictor and outcome plots 
+```{r}
+
+b <- gali %>%
+  select(country, equity_sources_tot, revenue_tot, capital_raised_tot, starts_with("accel_ben_rank_")) 
+
+colnames(b) <- c( "Country", "Total Equity Sources", "Revenue", "Capital Raised", "Network", "Business Skills", "Mentorship", "Investors", "Direct Funding", "Peers", "Credibility") 
+
+b <- left_join(b, wb, by = "Country" )
+
+b <- b %>%
+  pivot_longer(!c("Country", "Total Equity Sources", "Income group", "Region", "Revenue", "Capital Raised"), names_to = "Attention", values_to = "Score")
+
+b[is.na(b)] <- "High Income"  #The two countries with NA values are USA and UK because of naming issues. They are both classified high income
+
+#Some countries are classified as "High income" while other are "High Income". I will capitilize all first letter to solve this issue
+
+
+b$`Income group` <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", b$`Income group`, perl=TRUE)
+
+filter(b, Attention == "Network")  %>%
+  ggplot(aes(Score, `Total Equity Sources`)) +
+  geom_point()  +
+  facet_grid(~`Income group`)+
+  theme_bw()
+
+filter(b, Attention == "Direct Funding")  %>%
+  ggplot(aes(Score, `Capital Raised`)) +
+  geom_point()  +
+  facet_grid(~`Income group`)+
+  theme_bw()
 
 ```
 
@@ -295,49 +534,9 @@ gali_joined <- left_join(gali, gci, by = "country")
 
 ```
 
-#Fiancial Capital acquisiton total
-```{r message=FALSE, warning=FALSE, include=FALSE}
-gali_joined  <- gali_joined %>% mutate(capital_raised0 = gali_joined %>% select(starts_with("inv_") & ends_with("_m1")) %>% 
-                         rowSums(na.rm = TRUE))
-
-gali_joined  <- gali_joined %>% mutate(capital_raised1 = gali_joined %>% select(starts_with("fu1inv_") & ends_with("_m1")) %>% 
-                         rowSums(na.rm = TRUE))
-
-gali_joined  <- gali_joined %>% mutate(capital_raised2 = gali_joined %>% select(starts_with("fu2inv_") & ends_with("_m1")) %>% 
-                         rowSums(na.rm = TRUE))
-
-gali_joined  <- gali_joined %>% mutate(capital_raised3 = gali_joined %>% select(starts_with("fu3inv_") & ends_with("_m1")) %>% 
-                         rowSums(na.rm = TRUE))
-
-gali_joined  <- gali_joined %>% mutate(capital_raised4 = gali_joined %>% select(starts_with("fu4inv_") & ends_with("_m1")) %>% 
-                         rowSums(na.rm = TRUE))
-
-gali_joined  <- gali_joined %>% mutate(capital_raised_tot = gali_joined %>% select(starts_with("capital_raised")) %>% 
-                         rowSums(na.rm = TRUE))
-
-```
 
 
-#Revenues
-```{r message=FALSE, warning=FALSE, include=FALSE}
-gali_joined <- gali_joined %>% mutate(revenue_tot = gali_joined %>%
-                         select(contains("revenues")) %>% 
-                         rowSums(na.rm = TRUE))
-```
 
-#Human capital acquisition 
-```{r message=FALSE, warning=FALSE, include=FALSE}
-gali_joined  <- gali_joined %>% mutate(hr_tot = gali_joined %>%
-                         select(contains("_employees")) %>% 
-                         rowSums(na.rm = TRUE))
-```
-
-#Social capital acquisition 
-```{r message=FALSE, warning=FALSE, include=FALSE}
-gali_joined <- gali_joined %>% mutate(equity_sources_tot = gali_joined %>%
-                         select(contains("equityfrom")) %>% 
-                         rowSums(na.rm = TRUE))
-```
 
 # Results
 
@@ -393,6 +592,7 @@ fit1hc <- glmer(participated ~  accel_ben_rank_business_skills*EOSQ403 + (accel_
 fit00hc <- lmer(hr_tot ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country), data = gali_joined, REML = F)
 
 fit11hc <- lmer(hr_tot ~  accel_ben_rank_business_skills*EOSQ403 + (accel_ben_rank_business_skills|country), data = gali_joined, REML = F)
+
 hc0 <- summary_table_z(summary(fit0hc))
 hc1 <- summary_table_z(summary(fit1hc))
 hc00 <- summary_table(summary(fit00hc))
@@ -403,10 +603,11 @@ rownames(hc1) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCx
 rownames(hc00) <- c("Intercept","Attention to Human capital")
 rownames(hc11) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
 
-kable(hc0[,-1]) 
-kable(hc1[,-1])
-kable(hc00[,-1])
-kable(hc11[,-1])
+kable(hc0[,-1], escape = FALSE) 
+kable(hc1[,-1], escape = FALSE)
+kable(hc00[,-1], escape = FALSE)
+kable(hc11[,-1], escape = FALSE)
+
 
 ```
 
@@ -461,6 +662,9 @@ coef(summary(fit00sc))
 coef(summary(fit11sc))
 
 ```
+
+# Data and Methods
+
 
 
 # Discussion
