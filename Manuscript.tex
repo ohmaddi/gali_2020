@@ -170,7 +170,7 @@ The value of a resource varies with its institutional context (Holburn \& Zelner
 
 At the heart of the intersection between resource acquisition and the institutional context is entrepreneurial attention, that is, founders' attention allocation to resources. Bounded by their limited attentional capacities, entrepreneurs cannot attend to all the resources; rather, they focus on some resources but must ignore others. Where they focus their attention determines the propensity of mobilizing and acquiring resources. A venture could miss the chance to exploit an opportunity of resources acquisition if that opportunity never appears on the entrepreneur's radar screens because they are too focused on an alternative resource. For example, a voluntary work with potential partners who are well connected to other investors might be missed because the founder is too focused on raising capital by honing their business plan over and over and even paying accounting boutique firms to develop that business plan for them.
 
-Thus, selective attention plays a crucial role in both individual and organizational behavior because it bounds individual rationality and determines the menu of available actions (Simon, 1947). The debate over which resource should garner the entrepreneur's attention concludes that the founding team resource endowment is the key factor that influences resource acquisition. For instance, scholars argue that founding teams with a more ties to potential investors are more likely to gain funding (Shane \& Stuart, 2002). Furthermore, if we focus on the findings of the stream of research examining the performance implications of acquiring financial capital (e.g.; (Hochberg, Ljungqvist, \& Lu, 2007)) we would expect that early-stage financing should be most likely to garner founders' attention. However, the role of the institutional context has been ignored and neglected in this debate. I argue that selective attention allocation depends on both entrepreneur's resource endowment and institutional capital.
+Thus, selective attention plays a crucial role in both individual and organizational behavior because it bounds individual rationality and determines the menu of available actions (Simon, 1947). The debate over which resource should garner the entrepreneur's attention concludes that the founding team resource endowment is the key factor that influences resource acquisition. For instance, scholars argue that founding teams with a more ties to potential investors are more likely to gain funding (Shane \& Stuart, 2002). Furthermore, if we focus on the findings of the stream of research examining the performance implications of acquiring financial capital (Hochberg, Ljungqvist, \& Lu, 2007) we would expect that early-stage financing should be most likely to garner founders' attention. However, the role of the institutional context has been ignored and neglected in this debate. I argue that selective attention allocation depends on both entrepreneur's resource endowment and institutional capital.
 
 Therefore, I state the following hypotheses about the relationship between the congruence level of the entrepreneurs' attention to resources and the institutional level capital, and the venture's resource mobilization, acquisition, and performance.
 
@@ -186,13 +186,43 @@ Therefore, I state the following hypotheses about the relationship between the c
 \hypertarget{measures}{%
 \subsection{Measures}\label{measures}}
 
+\emph{Predictors}
+\textbf{Venture attention to a resource} A common approach to measure attention allocation is to use the revealed preference of individuals to evaluate the attention structure (Gebauer, 2009). I use the entrepreneurs' ranked preference of the desired benefits from accelerator programs as a proxy for the attention allocation of the early-stage ventures to various resources. The GALI questionnaire asks applying entrepreneurs to rank seven acceleration benefits by perceived importance to their ventures. The seven benefits are network development (Network), e.g.~with potential partners and customers, business skill development (Business Skills), mentorship from business experts (Mentorship), indirect funding through access to potential investors/funders (Access to Investors), securing direct venture funding (Direct Funding), gaining access to a group of like-minded entrepreneurs (Access to Like-minded Entrepreneurs), and awareness and credibility (Awareness and Credibility). Setting aside Awareness and Credibility and Access to Like-minded Entrepreneurs, the remaining five benefits can be categorized into three types of resources. Mentorship and Business Skills represent the development of human capital. Network help develop social capital. Direct Funding and Access to Investors improve the financial capital of early-stage ventures directly or indirectly.
+
+Respondents are asked to rank the seven benefits on a scale from one to seven, with one being the most important and seven being the least important. These rankings were reverse-coded to facilitate interpretation of the effects in order of increased importance, with 1 being the least important and 7 the most important. The benefits that accelerators provide consistently ranked in the top three were network development, business skills development, and securing direct venture funding. I assume that the early-stage ventures' attention allocation reflects the rankings given in their questionnaires. The questionnaire enforces a rule that respondents need to enter a ranking for all seven benefits and no tie is allowed. I exclude observations that do not have complete ranking of the seven items or because they have ties in the rankings.
+
+\textbf{Institutional level capital} To measure the level of capital of a certain resource at the country level, I used data from the World Economic Forum Global Competitiveness Index (GCI). Specificaly, I used the variable State of cluster development as a measure for institutional level social capital; Ease of finding skilled employees as a measure for institutional level human capital; and Venture capital availability, Financing of Small and Medium Enterprises, Domestic Credit Gaps as different measures of institutional level financial capital. While former measures of fiancial capital are self-explanatory, the latter variable is defined loans, purchases of non-equity securities, and trade credits and other accounts receivable provided to the private sector by financial corporations as a percentage of gross domestic products (GDP).
+
+\emph{Outcomes}
+\textbf{Resource mobilization} is coded as a dichotomous measure \emph{Participated} equal to one
+if an applicant participate to an accelerator program of choice, and zero otherwise. I assume that pariticipating to an acceleration program is the first step to mobiliza all types of resources provided by the accelerator.
+
+\textbf{Resource acquisition} once participants mobilize resources through participation to an accelerator, they engage in acquiring resources that garner their attention. These resources can translate into (a) raising capital from one source or many sources depending on (b) the entrepreneurs social capital (i.e.~Network) or (c) hiring employees. (a), (b), and (c) are all resource acquisition outcomes.
+
+\textbf{Performance} finaly to measure the impact on venture performance, I use the variable \emph{Revenue} as a proxy for this outcome. This is the most commonly used performance indicator in the management in strategy litrature.
+
+\emph{Control Variables}
+\textbf{Human Capital Index} consists of educational attainment, prior career experience in executive positions (C-level positions), team tenure, and prior founding experience (Colombo \& Grilli, 2005; Dimov \& Shepherd, 2005; Estrin, Mickiewicz, \& Stephan, 2016). I measure the educational attainment of a founding team by calculating the percentage of founders with a graduate degree in the founding team (Graduate Percentage). Prior career experience in C-level executive positions (Prior C-level Executive Percentage) is measured by the percentage of founders in the founding teams holding C-level executive positions prior to the current venture. Average Team Tenure measures the average working years of the founding team members. Team Prior Founding measures the number of organizations founded by the founding team before the current venture.
+
+To create an index, I use the quantile normalization technique to reduce the effect of extreme values while preserving the sequence of an observation in each variable (Hansen, Irizarry, \& Wu, 2012). Quantile normalization makes two or more distributions identical in statistical properties, such as maximum, minimum, and mean, without a reference distribution. It maintains the order, namely quantile, of observations in each variable treated but the values are normalized with respect to values from other variables at the same quantile. After doing so, the extreme values observed in some variables are smoothed out while the order is preserved, allowing us to explore the effect of each variable more accurately. I first z-standardize the above-mentioned variables. Then, I use the \{preprocessCore\} package to conduct quantile normalization by sets of variables. I then rescale the index to a range between 0 and 1.
+
+\textbf{Gender composition} the proportion female co-founders in each venture team.
+
 \hypertarget{data}{%
 \subsection{Data}\label{data}}
+
+The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information -- collected during program applications -- about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at \href{www.galidata.org/data-request}{GALI Data}. This is multi-country dataset. It typically contains hundreds of ventures per country.
+
+When entrepreneurs apply to a GALI-participating accelerator, they are asked to complete a standardized survey which asks basic questions about their venture's business model, financial performance, and founding team. Then, after one year, they are asked to complete a follow-up survey, whether or not they were accepted into the program to which they applied.
+
+I set aside XXX nonprofit organizations and XXX observations that are missing relevant venture information or preference ranking, resulting in xxx observations in the final sample. All financial statistics are in United States Dollars (USD). ********
 
 \hypertarget{methods}{%
 \subsection{Methods}\label{methods}}
 
-We report how we determined our sample size, all data exclusions (if any), all manipulations, and all measures in the study.
+Mixed-effects logit and probit
+
+Given the structure of the data I used a model that incorporates both fixed- and random-effects terms. This helps me take into account the institutional (i.e.~country) effect on venture outcomes and quantify the extent to which differences in outcomes reflect differences in the effects of country-specific features, specifically institutional level capital.
 
 \hypertarget{data-analysis}{%
 \subsection{Data analysis}\label{data-analysis}}
@@ -617,14 +647,6 @@ AHCxEase of finding skilled employees & 3,118.93 & 3,842.90 & 0.81\\
 \hypertarget{data-and-methods}{%
 \section{Data and Methods}\label{data-and-methods}}
 
-Our dataset, the Global Accelerator Learning Initiative (GALI), covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information -- collected during program applications -- about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at \href{www.galidata.org/data-request}{GALI Data}.
-
-When entrepreneurs apply to a GALI-participating accelerator, they are asked to complete a standardized survey which asks basic questions about their venture's business model, financial performance, and founding team. Then, after one year, they are asked to complete a follow-up survey, whether or not they were accepted into the program to which they applied.
-
-All financial statistics are in United States Dollars (USD).
-
-Table 1: Ventures in sample, by country of operation and survey responses
-
 \hypertarget{discussion}{%
 \section{Discussion}\label{discussion}}
 
@@ -653,14 +675,29 @@ Bolstad, B. (2020). \emph{PreprocessCore: A collection of pre-processing functio
 \leavevmode\hypertarget{ref-R-rio}{}%
 Chan, C.-h., Chan, G. C., Leeper, T. J., \& Becker, J. (2018). \emph{Rio: A swiss-army knife for data file i/o}.
 
+\leavevmode\hypertarget{ref-colombo2005founders}{}%
+Colombo, M. G., \& Grilli, L. (2005). Founders' human capital and the growth of new technology-based firms: A competence-based view. \emph{Research Policy}, \emph{34}(6), 795--816.
+
 \leavevmode\hypertarget{ref-R-plm_a}{}%
 Croissant, Y., \& Millo, G. (2008). Panel data econometrics in R: The plm package. \emph{Journal of Statistical Software}, \emph{27}(2), 1--43. \url{https://doi.org/10.18637/jss.v027.i02}
+
+\leavevmode\hypertarget{ref-dimov2005human}{}%
+Dimov, D. P., \& Shepherd, D. A. (2005). Human capital theory and venture capital firms: Exploring ``home runs'' and ``strike outs''. \emph{Journal of Business Venturing}, \emph{20}(1), 1--21.
+
+\leavevmode\hypertarget{ref-estrin2016human}{}%
+Estrin, S., Mickiewicz, T., \& Stephan, U. (2016). Human capital in social and commercial entrepreneurship. \emph{Journal of Business Venturing}, \emph{31}(4), 449--467.
 
 \leavevmode\hypertarget{ref-R-janitor}{}%
 Firke, S. (2020). \emph{Janitor: Simple tools for examining and cleaning dirty data}. Retrieved from \url{https://CRAN.R-project.org/package=janitor}
 
+\leavevmode\hypertarget{ref-gebauer2009attention}{}%
+Gebauer, H. (2009). An attention-based view on service orientation in the business strategy of manufacturing companies. \emph{Journal of Managerial Psychology}.
+
 \leavevmode\hypertarget{ref-R-lubridate}{}%
 Grolemund, G., \& Wickham, H. (2011). Dates and times made easy with lubridate. \emph{Journal of Statistical Software}, \emph{40}(3), 1--25. Retrieved from \url{http://www.jstatsoft.org/v40/i03/}
+
+\leavevmode\hypertarget{ref-hansen2012removing}{}%
+Hansen, K. D., Irizarry, R. A., \& Wu, Z. (2012). Removing technical variability in rna-seq data using conditional quantile normalization. \emph{Biostatistics}, \emph{13}(2), 204--216.
 
 \leavevmode\hypertarget{ref-R-purrr}{}%
 Henry, L., \& Wickham, H. (2020). \emph{Purrr: Functional programming tools}. Retrieved from \url{https://CRAN.R-project.org/package=purrr}

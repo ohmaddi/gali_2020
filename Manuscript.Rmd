@@ -47,6 +47,8 @@ output            : papaja::apa6_pdf
 
 ```{r setup, include = FALSE}
 library("papaja")
+#install.packages("tinytex")
+#tinytex::install_tinytex()
 r_refs("r-references.bib")
 ```
 
@@ -80,34 +82,40 @@ Therefore, I state the following hypotheses about the relationship between the c
 ## Measures
 
 *Predictors*
+**Venture attention to a resource** A common approach to measure attention allocation is to use the revealed preference of individuals to evaluate the attention structure [@gebauer2009attention]. I use the entrepreneurs’ ranked preference of the desired benefits from accelerator programs as a proxy for the attention allocation of the early-stage ventures to various resources. The GALI questionnaire asks applying entrepreneurs to rank seven acceleration benefits by perceived importance to their ventures. The seven benefits are network development (Network), e.g. with potential partners and customers, business skill development (Business Skills), mentorship from business experts (Mentorship), indirect funding through access to potential investors/funders (Access to Investors), securing direct venture funding (Direct Funding), gaining access to a group of like-minded entrepreneurs (Access to Like-minded Entrepreneurs), and awareness and credibility (Awareness and Credibility). Setting aside Awareness and Credibility and Access to Like-minded Entrepreneurs, the remaining five benefits can be categorized into three types of resources. Mentorship and Business Skills represent the development of human capital. Network help develop social capital. Direct Funding and Access to Investors improve the financial capital of early-stage ventures directly or indirectly.
+
+Respondents are asked to rank the seven benefits on a scale from one to seven, with one being the most important and seven being the least important. These rankings were reverse-coded to facilitate interpretation of the effects in order of increased importance, with 1 being the least important and 7 the most important. The benefits that accelerators provide consistently ranked in the top three were network development, business skills development, and securing direct venture funding. I assume that the early-stage ventures’ attention allocation reflects the rankings given in their questionnaires. The questionnaire enforces a rule that respondents need to enter a ranking for all seven benefits and no tie is allowed. I exclude observations that do not have complete ranking of the seven items or because they have ties in the rankings.
+
+**Institutional level capital** To measure the level of capital of a certain resource at the country level, I used data from the World Economic Forum Global Competitiveness Index (GCI). Specificaly, I used the variable State of cluster development as a measure for institutional level social capital; Ease of finding skilled employees as a measure for institutional level human capital; and Venture capital availability, Financing of Small and Medium Enterprises, Domestic Credit Gaps as different measures of institutional level financial capital. While former measures of fiancial capital are self-explanatory, the latter variable is defined loans, purchases of non-equity securities, and trade credits and other accounts receivable provided to the private sector by financial corporations as a percentage of gross domestic products (GDP). 
+
 *Outcomes*
+**Resource mobilization** is coded as a dichotomous measure *Participated* equal to one
+if an applicant participate to an accelerator program of choice, and zero otherwise. I assume that pariticipating to an acceleration program is the first step to mobiliza all types of resources provided by the accelerator.  
+
+**Resource acquisition** once participants mobilize resources through participation to an accelerator, they engage in acquiring resources that garner their attention. These resources can translate into (a) raising capital from one source or many sources depending on (b) the entrepreneurs social capital (i.e. Network) or (c) hiring employees. (a), (b), and (c) are all resource acquisition outcomes. 
+
+**Performance** finaly to measure the impact on venture performance, I use the variable *Revenue* as a proxy for this outcome. This is the most commonly used performance indicator in the management in strategy litrature. 
+
 *Control Variables*
 **Human Capital Index** consists of educational attainment, prior career experience in executive positions (C-level positions), team tenure, and prior founding experience [@colombo2005founders; @dimov2005human; @estrin2016human]. I measure the educational attainment of a founding team by calculating the percentage of founders with a graduate degree in the founding team (Graduate Percentage). Prior career experience in C-level executive positions (Prior C-level Executive Percentage) is measured by the percentage of founders in the founding teams holding C-level executive positions prior to the current venture. Average Team Tenure measures the average working years of the founding team members. Team Prior Founding measures the number of organizations founded by the founding team before the current venture.
 
 To create an index, I use the quantile normalization technique to reduce the effect of extreme values while preserving the sequence of an observation in each variable [@hansen2012removing]. Quantile normalization makes two or more distributions identical in statistical properties, such as maximum, minimum, and mean, without a reference distribution. It maintains the order, namely quantile, of observations in each variable treated but the values are normalized with respect to values from other variables at the same quantile. After doing so, the extreme values observed in some variables are smoothed out while the order is preserved, allowing us to explore the effect of each variable more accurately. I first z-standardize the above-mentioned variables. Then, I use the {preprocessCore} package to conduct quantile normalization by sets of variables. I then rescale the index to a range between 0 and 1.
 
-**Gender Decomposition**
+**Gender composition** the proportion female co-founders in each venture team. 
 
 ## Data
-The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information – collected during program applications – about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at [GALI Data](www.galidata.org/data-request).
-
-This is multi-country dataset. It typically contain hundreds of ventures per country. 
+The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information – collected during program applications – about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at [GALI Data](www.galidata.org/data-request). This is multi-country dataset. It typically contains hundreds of ventures per country. 
 
 When entrepreneurs apply to a GALI-participating accelerator, they are asked to complete a standardized survey which asks basic questions about their venture’s business model, financial performance, and founding team. Then, after one year, they are asked to complete a follow-up survey, whether or not they were accepted into the program to which they applied. 
 
-All financial statistics are in United States Dollars (USD).
 
-Table 1: Ventures in sample, by country of operation and survey responses
 
+I set aside XXX nonprofit organizations and XXX observations that are missing relevant venture information or preference ranking, resulting in xxx observations in the final sample. All financial statistics are in United States Dollars (USD). ********
 
 ## Methods
 Mixed-effects logit and probit 
 
 Given the structure of the data I used a model that incorporates both fixed- and random-effects terms. This helps me take into account the institutional (i.e. country) effect on venture outcomes and quantify the extent to which differences in outcomes reflect differences in the effects of country-specific features, specifically institutional level capital. 
-
-yic=Xicβ+Zcγ+uc+εic,  withi=1,…,Nc;c=1,…,C.
-
-Outcome y ic for each person i in country c is assumed to depend on observed predictors and unobserved factors. Xic contains variables that summarize individual-level characteristics such as age, education, or marital status; Zc contains variables summarizing country-level features such as socio-economic institutions or labour markets. There are also unobserved individual effects ( ε ic ) and country effects ( u c ), each assumed to be normally distributed and uncorrelated with Xic and Zc . We suppose the researcher has available a data set with a large number of individuals for each country ( N c is typically in the thousands) sampled from each of a small number of countries ( C is typically less than 30). The parameters associated with the observed predictors β and γ are sometimes called ‘fixed’ regression parameters to distinguish them from the parameters characterizing the joint distribution of the random terms ε ic and u c (their variances σ2ε and σ2u ). These variances are often referred to as ‘random effect’ parameters or ‘variance components’.
 
 
 ## Data analysis
