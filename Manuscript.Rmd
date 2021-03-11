@@ -47,8 +47,6 @@ output            : papaja::apa6_pdf
 
 ```{r setup, include = FALSE}
 library("papaja")
-#install.packages("tinytex")
-#tinytex::install_tinytex()
 r_refs("r-references.bib")
 ```
 
@@ -56,7 +54,52 @@ r_refs("r-references.bib")
 # Seed for random number generation
 set.seed(42)
 knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+#options(knitr.table.format = "latex")
 ```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#This is not my code. It is from https://rdrr.io/cran/gdata/src/R/cbindX.R to help me me bind cols of dfs with different number of rows
+
+cbindX <- function(...)
+{
+  ## --- Setup ---
+
+  x <- list(...)
+
+  ## Are all objects matrices or data.frames?
+  test <- sapply(x, function(z) is.matrix(z) | is.data.frame(z))
+  if(any(!test)) stop("only matrices and data.frames can be used")
+
+  ## Get maximum number of rows
+  tmp <- sapply(x, nrow)
+  maxi <- which.max(tmp)
+  test <- tmp < tmp[maxi]
+
+  ## --- Core ---
+
+  ## Adding additional "empty" rows so that all objects have the same number of rows
+  for(i in 1:length(tmp)) {
+    if(test[i]) {
+      add <- matrix(nrow=tmp[maxi] - tmp[i], ncol=ncol(x[[i]]))
+      if(is.data.frame(x[[i]])) {
+        add <- as.data.frame(add)
+      }
+      colnames(add) <- colnames(x[[i]])
+      x[[i]] <- rbind(x[[i]], add)
+    }
+  }
+
+  ## Column-bind all objects
+  ret <- x[[1]]
+  for(i in 2:length(tmp)) {
+    ret <- cbind(ret, x[[i]])
+  }
+
+  ## --- Return ---
+  ret
+}
+```
+
 
 # Introduction 
 Early stage entrepreneurs are faced with a range of resource choices to seek, and must decide what should garner their attention. The literature on entrepreneurial resources argues the resources entrepreneurs possess shape their resource acquisition and once they raise one resource others follow. Thus, one might theorize that founders should focus their attention on the resource they can leverage based on their existing resource endowment. However, resource acquisition depends on both entrepreneurs’ resource endowment and the institutional-level capital. Both are indispensable antecedents that affect the mobilization and acquisition of additional capital. 
@@ -81,27 +124,30 @@ Therefore, I state the following hypotheses about the relationship between the c
 
 ## Measures
 
-*Predictors*
-**Venture attention to a resource** A common approach to measure attention allocation is to use the revealed preference of individuals to evaluate the attention structure [@gebauer2009attention]. I use the entrepreneurs’ ranked preference of the desired benefits from accelerator programs as a proxy for the attention allocation of the early-stage ventures to various resources. The GALI questionnaire asks applying entrepreneurs to rank seven acceleration benefits by perceived importance to their ventures. The seven benefits are network development (Network), e.g. with potential partners and customers, business skill development (Business Skills), mentorship from business experts (Mentorship), indirect funding through access to potential investors/funders (Access to Investors), securing direct venture funding (Direct Funding), gaining access to a group of like-minded entrepreneurs (Access to Like-minded Entrepreneurs), and awareness and credibility (Awareness and Credibility). Setting aside Awareness and Credibility and Access to Like-minded Entrepreneurs, the remaining five benefits can be categorized into three types of resources. Mentorship and Business Skills represent the development of human capital. Network help develop social capital. Direct Funding and Access to Investors improve the financial capital of early-stage ventures directly or indirectly.
+**Predictors**
+
+*Venture attention to a resource* A common approach to measure attention allocation is to use the revealed preference of individuals to evaluate the attention structure [@gebauer2009attention]. I use the entrepreneurs’ ranked preference of the desired benefits from accelerator programs as a proxy for the attention allocation of the early-stage ventures to various resources. The GALI questionnaire asks applying entrepreneurs to rank seven acceleration benefits by perceived importance to their ventures. The seven benefits are network development (Network), e.g. with potential partners and customers, business skill development (Business Skills), mentorship from business experts (Mentorship), indirect funding through access to potential investors/funders (Access to Investors), securing direct venture funding (Direct Funding), gaining access to a group of like-minded entrepreneurs (Access to Like-minded Entrepreneurs), and awareness and credibility (Awareness and Credibility). Setting aside Awareness and Credibility and Access to Like-minded Entrepreneurs, the remaining five benefits can be categorized into three types of resources. Mentorship and Business Skills represent the development of human capital. Network help develop social capital. Direct Funding and Access to Investors improve the financial capital of early-stage ventures directly or indirectly.
 
 Respondents are asked to rank the seven benefits on a scale from one to seven, with one being the most important and seven being the least important. These rankings were reverse-coded to facilitate interpretation of the effects in order of increased importance, with 1 being the least important and 7 the most important. The benefits that accelerators provide consistently ranked in the top three were network development, business skills development, and securing direct venture funding. I assume that the early-stage ventures’ attention allocation reflects the rankings given in their questionnaires. The questionnaire enforces a rule that respondents need to enter a ranking for all seven benefits and no tie is allowed. I exclude observations that do not have complete ranking of the seven items or because they have ties in the rankings.
 
-**Institutional level capital** To measure the level of capital of a certain resource at the country level, I used data from the World Economic Forum Global Competitiveness Index (GCI). Specificaly, I used the variable State of cluster development as a measure for institutional level social capital; Ease of finding skilled employees as a measure for institutional level human capital; and Venture capital availability, Financing of Small and Medium Enterprises, Domestic Credit Gaps as different measures of institutional level financial capital. While former measures of fiancial capital are self-explanatory, the latter variable is defined loans, purchases of non-equity securities, and trade credits and other accounts receivable provided to the private sector by financial corporations as a percentage of gross domestic products (GDP). 
+*Institutional level capital* To measure the level of capital of a certain resource at the country level, I used data from the World Economic Forum Global Competitiveness Index (GCI). Specificaly, I used the variable State of cluster development as a measure for institutional level social capital; Ease of finding skilled employees as a measure for institutional level human capital; and Venture capital (VC) availability, Financing of Small and Medium Enterprises (SMEs), Domestic Credit Gaps as different measures of institutional level financial capital. While former measures of fiancial capital are self-explanatory, the latter variable is defined loans, purchases of non-equity securities, and trade credits and other accounts receivable provided to the private sector by financial corporations as a percentage of gross domestic products (GDP). 
 
-*Outcomes*
-**Resource mobilization** is coded as a dichotomous measure *Participated* equal to one
+**Outcomes**
+
+*Resource mobilization* is coded as a dichotomous measure *Participated* equal to one
 if an applicant participate to an accelerator program of choice, and zero otherwise. I assume that pariticipating to an acceleration program is the first step to mobiliza all types of resources provided by the accelerator.  
 
-**Resource acquisition** once participants mobilize resources through participation to an accelerator, they engage in acquiring resources that garner their attention. These resources can translate into (a) raising capital from one source or many sources depending on (b) the entrepreneurs social capital (i.e. Network) or (c) hiring employees. (a), (b), and (c) are all resource acquisition outcomes. 
+*Resource acquisition* once participants mobilize resources through participation to an accelerator, they engage in acquiring resources that garner their attention. These resources can translate into (a) raising capital from one source or many sources depending on (b) the entrepreneurs social capital (i.e. Network) or (c) hiring employees. (a), (b), and (c) are all resource acquisition outcomes. 
 
-**Performance** finaly to measure the impact on venture performance, I use the variable *Revenue* as a proxy for this outcome. This is the most commonly used performance indicator in the management in strategy litrature. 
+*Performance* finaly to measure the impact on venture performance, I use the variable *Revenue* as a proxy for this outcome. This is the most commonly used performance indicator in the management in strategy litrature. 
 
-*Control Variables*
-**Human Capital Index** consists of educational attainment, prior career experience in executive positions (C-level positions), team tenure, and prior founding experience [@colombo2005founders; @dimov2005human; @estrin2016human]. I measure the educational attainment of a founding team by calculating the percentage of founders with a graduate degree in the founding team (Graduate Percentage). Prior career experience in C-level executive positions (Prior C-level Executive Percentage) is measured by the percentage of founders in the founding teams holding C-level executive positions prior to the current venture. Average Team Tenure measures the average working years of the founding team members. Team Prior Founding measures the number of organizations founded by the founding team before the current venture.
+**Control Variables**
+
+*Human Capital Index* consists of educational attainment, prior career experience in executive positions (C-level positions), team tenure, and prior founding experience [@colombo2005founders; @dimov2005human; @estrin2016human]. I measure the educational attainment of a founding team by calculating the percentage of founders with a graduate degree in the founding team (Graduate Percentage). Prior career experience in C-level executive positions (Prior C-level Executive Percentage) is measured by the percentage of founders in the founding teams holding C-level executive positions prior to the current venture. Average Team Tenure measures the average working years of the founding team members. Team Prior Founding measures the number of organizations founded by the founding team before the current venture.
 
 To create an index, I use the quantile normalization technique to reduce the effect of extreme values while preserving the sequence of an observation in each variable [@hansen2012removing]. Quantile normalization makes two or more distributions identical in statistical properties, such as maximum, minimum, and mean, without a reference distribution. It maintains the order, namely quantile, of observations in each variable treated but the values are normalized with respect to values from other variables at the same quantile. After doing so, the extreme values observed in some variables are smoothed out while the order is preserved, allowing us to explore the effect of each variable more accurately. I first z-standardize the above-mentioned variables. Then, I use the {preprocessCore} package to conduct quantile normalization by sets of variables. I then rescale the index to a range between 0 and 1.
 
-**Gender composition** the proportion female co-founders in each venture team. 
+*Gender composition* the proportion female co-founders in each venture team. 
 
 ## Data
 The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information – collected during program applications – about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at [GALI Data](www.galidata.org/data-request). This is multi-country dataset. It typically contains hundreds of ventures per country. 
@@ -113,9 +159,42 @@ When entrepreneurs apply to a GALI-participating accelerator, they are asked to 
 I set aside XXX nonprofit organizations and XXX observations that are missing relevant venture information or preference ranking, resulting in xxx observations in the final sample. All financial statistics are in United States Dollars (USD). ********
 
 ## Methods
-Mixed-effects logit and probit 
+The ventures in our sample are nested within countries. To account for such nested (or hierarchical) structure of the data, I opt for a linear mixed effects model to estimate the effects of each resource alone and when it interacts with institutional level of the resource.  This helps us account for fixed effects and random effects associated with non-nested grouping factors. Namely, it allows us to take into account the institutional (i.e. country) effect on venture outcomes and quantify the extent to which differences in outcomes reflect differences in the effects of country-specific features, specifically institutional level capital. 
 
-Given the structure of the data I used a model that incorporates both fixed- and random-effects terms. This helps me take into account the institutional (i.e. country) effect on venture outcomes and quantify the extent to which differences in outcomes reflect differences in the effects of country-specific features, specifically institutional level capital. 
+The following equation (formulas) show all the models by outcome category. Of note, I run all the following models with conrols and without controls as robustness check. Control vriables are HCI refering to Human Capital Index and GC refering to Gender composition (i.e. female percentage in a team). 
+
+**Resource mobilization**
+
+(1)	*Participated ~  AHC + (AHC | Country)    ; AHC = Attention to Human Capital* 
+(2)	*Participated ~  AHC + (AHC x Ease of finding skilled employees | Country)*
+(3)	*Participated ~  AFC + (AFC | Country)   ; AHC = Attention to Financial Capital*
+(4)	*Participated ~  AFC + (AFC x Financing of SMEs| Country)*   
+(5)	*Participated ~  AFC + (AFC x VC availability | Country)*   
+(6)	*Participated ~  AFC + (AFC x Domestic Credit Gaps | Country)*   
+(7)	*Participated ~  ASC + (ASC | Country) ; ASC = Attention to Social Capital*   
+(8)	*Participated ~  ASC + (ASC x State of cluster development | Country)*   
+
+**Resource acquisition** 
+
+(9) *Total employees ~ AHC + (AHC | Country)*
+(10) *Total employees ~ AHC + (AHC x Ease of finding skilled employees | Country)*
+(11) *Capital Raised ~ AFC + (AFC | Country)* 
+(12) *Capital Raised ~ AFC + (AFC x Financing of SMEs| Country)*
+(13) *Capital Raised ~ AFC + (AFC x VC availability | Country)*
+(14) *Capital Raised ~ AFC + (AFC x VC availability | Country)*
+(15) *Capital sources ~ ASC + (ASC | Country)*   
+(16) *Capital sources ~  ASC + (ASC x State of cluster development | Country)*  
+
+**Performance** 
+
+(17)	*Revenue ~  AHC + (AHC | Country)* 
+(18)	*Revenue ~  AHC + (AHC x Ease of finding skilled employees | Country)*
+(19)	*Revenue ~  AFC + (AFC | Country)*
+(20)	*Revenue ~  AFC + (AFC x Financing of SMEs| Country)*   
+(21)	*Revenue ~  AFC + (AFC x VC availability | Country)*   
+(22)	*Revenue ~  AFC + (AFC x Domestic Credit Gaps | Country)*   
+(23)	*Revenue ~  ASC + (ASC | Country)*   
+(24)	*Revenue ~  ASC + (ASC x State of cluster development | Country)*
 
 
 ## Data analysis
@@ -128,6 +207,7 @@ library(ggplot2)
 library(psych)
 library(knitr)
 library(preprocessCore)
+library(kableExtra)
 
 ```
 
@@ -242,7 +322,7 @@ library(plot3D)
 with(gci, text3D(EOSQ403, EOSQ425, EOSQ109, 
   labels = gci$country,  
   col = gg.col(100), theta = 60, phi = 20,
-  xlab = "Human capital", ylab = "Financail capital", zlab = "Social capital", 
+  xlab = "Human capital", ylab = "Financial capital", zlab = "Social capital", 
   main = "Institutional level resources", cex = 0.6, 
   bty = "g", ticktype = "detailed", d = 2,
   clab = c("Urban","Pop"), adj = 1, font = 1.5))
@@ -253,9 +333,9 @@ plotdev(xlim = c(3, 4), ylim = c(3, 5.5),
 
 ```
 
-#Attention to capital - venture data
-
 ```{r Cleaning data of acceleration benefit ranking, message=FALSE, warning=FALSE, include=FALSE}
+
+## Attention to capital - venture data
 
 #Removing ventures that ranked benefits outside of given scale (i.e. 1 to 7)
 
@@ -298,12 +378,14 @@ gali <- filter(gali,
 
 ```
 
+
+
+```{r Human capital index}
 ##Control variables 
 
 ##Constrcuting human capital index (control variable)
 ###Graduate percentage, Prior C-level Executive Percentage, Average Team Tenure , Team Prior Founding 
 
-```{r Human capital index}
 #Graduate percentage
 
 gali$founder1_grad = ifelse(gali$found_name1_education == "Masters Degree" | 
@@ -368,9 +450,9 @@ gali$HC_index <- (gali$normq_team_prior_founding + gali$normq_prior_clevel_pct +
 
 ```
 
-##Gender decomposition variable 
-
 ```{r Gender decomposition variable}
+##Gender composition variable 
+
 gali <- gali %>% drop_na(found_name1_gender)
 
 gali$found_name2_gender[is.na(gali$found_name2_gender)] <- 0
@@ -384,8 +466,9 @@ gali$female_pct <- round(((gali$founder1_f + gali$founder2_f + gali$founder3_f) 
 
 ```
 
-#Reverse code attention variable 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+#Reverse code attention variable 
+
 #Reverse code fundtion 
 reverse <- function(x){x*-1 +8}
 
@@ -397,10 +480,9 @@ gali <- cbind(gali %>%
 
 ```
 
-
+```{r fig.height=5, fig.width=8}
 #Distribution of attention 
 
-```{r fig.height=5, fig.width=8}
 a <- gali %>%
   select(country, starts_with("accel_ben_rank_")) 
 
@@ -438,31 +520,31 @@ a  %>%
 
 ```
 
-##Outcomes 
-
-#Revenues
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+#Revenues
+
 gali <- gali %>% mutate(revenue_tot = gali %>%
                          select(contains("revenues")) %>% 
                          rowSums(na.rm = TRUE))
 ```
 
-#Human capital acquisition 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+#Human capital acquisition
+
 gali  <- gali %>% mutate(hr_tot = gali %>%
                          select(contains("_employees")) %>% 
                          rowSums(na.rm = TRUE))
 ```
 
-#Social capital acquisition 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+#Social capital acquisition
 gali <- gali %>% mutate(equity_sources_tot = gali %>%
                          select(contains("equityfrom")) %>% 
                          rowSums(na.rm = TRUE))
 ```
 
-#Fiancial Capital acquisiton total
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+#Fiancial Capital acquisiton total
 gali  <- gali %>% mutate(capital_raised0 = gali %>% select(starts_with("inv_") & ends_with("_m1")) %>% 
                          rowSums(na.rm = TRUE))
 
@@ -483,9 +565,8 @@ gali  <- gali %>% mutate(capital_raised_tot = gali %>% select(starts_with("capit
 
 ```
 
-
-#Predictor and outcome plots 
 ```{r}
+#Predictor and outcome plots 
 
 b <- gali %>%
   select(country, equity_sources_tot, revenue_tot, capital_raised_tot, starts_with("accel_ben_rank_")) 
@@ -518,8 +599,6 @@ filter(b, Attention == "Direct Funding")  %>%
 
 ```
 
-
-
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 
 mean_norm_minmax <- function(x){
@@ -533,22 +612,14 @@ gali <- cbind(gali %>%
         select(-starts_with("accel_ben_rank_")), mean_norm_att)
 ```
 
-
-
-#Join all 3 datasets 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
-
+#Join all 3 datasets 
 gali_joined <- left_join(gali, gci, by = "country")
-
 ```
 
-
-
-
-
+```{r message=FALSE, warning=FALSE}
 # Results
 
-```{r message=FALSE, warning=FALSE, include=FALSE}
 #Function to extract coefficients of summary table
 
 summary_table <- function(x){ x$coefficients %>%
@@ -557,6 +628,7 @@ summary_table <- function(x){ x$coefficients %>%
       "$b$" = "Estimate"
     , "SE" = "Std. Error"
     , "$t$" = "t value"
+    , "$p$" = "Pr(>|t|)"
   ) %>%
   mutate(
     Effect = papaja:::prettify_terms(rownames(.))
@@ -566,7 +638,7 @@ summary_table <- function(x){ x$coefficients %>%
     , gt1 = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
     , zero = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
   ) %>%
-  select(Effect, `$b$`, `SE`, `$t$`)}
+  select(Effect, `$b$`, `SE`, `$t$`, `$p$`)}
 
 #for glmer
 
@@ -576,6 +648,7 @@ summary_table_z <- function(x){ x$coefficients %>%
       "$b$" = "Estimate"
     , "SE" = "Std. Error"
     , "$z$" = "z value"
+    , "$p$" = "Pr(>|z|)"
   ) %>%
   mutate(
     Effect = papaja:::prettify_terms(rownames(.))
@@ -585,57 +658,154 @@ summary_table_z <- function(x){ x$coefficients %>%
     , gt1 = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
     , zero = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
   ) %>%
-  select(Effect, `$b$`, `SE`, `$z$`)}
+  select(Effect, `$b$`, `SE`, `$z$`, `$p$`)}
 
 ```
 
 
-#Mixed model analysis - Human capital
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
+#Outcome: resource mobilization 
+#Models
 library(lme4)
 fit0hc <- glmer(participated ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country), data = gali_joined, family=binomial)
 
+fit0hc_c <- glmer(participated ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country) + HC_index + female_pct, data = gali_joined, family=binomial)
+
 fit1hc <- glmer(participated ~  accel_ben_rank_business_skills*EOSQ403 + (accel_ben_rank_business_skills|country), data = gali_joined, family=binomial)
+
+fit1hc_c <- glmer(participated ~  accel_ben_rank_business_skills*EOSQ403 + (accel_ben_rank_business_skills|country)+ HC_index + female_pct, data = gali_joined, family=binomial)
+
+fit0fc <- glmer(participated ~  accel_ben_rank_direct_funding + (accel_ben_rank_direct_funding|country), data = gali_joined, family=binomial)
+
+fit0fc_c <- glmer(participated ~  accel_ben_rank_direct_funding + (accel_ben_rank_direct_funding|country)+ HC_index + female_pct, data = gali_joined, family=binomial)
+
+fit1fc <- glmer(participated ~ accel_ben_rank_direct_funding*EOSQ425 + (accel_ben_rank_direct_funding |country ), data = gali_joined, family=binomial)
+
+fit1fc_c <- glmer(participated ~ accel_ben_rank_direct_funding*EOSQ425 + (accel_ben_rank_direct_funding |country )+ HC_index + female_pct, data = gali_joined, family=binomial)
+
+fit2fc <- glmer(participated ~ accel_ben_rank_direct_funding*EOSQ089 + (accel_ben_rank_direct_funding |country ), data = gali_joined, family=binomial)
+
+fit2fc_c <- glmer(participated ~ accel_ben_rank_direct_funding*EOSQ089 + (accel_ben_rank_direct_funding |country )+ HC_index + female_pct, data = gali_joined, family=binomial)
+
+fit3fc <- glmer(participated ~ accel_ben_rank_direct_funding*DOMCREDITGDP + (accel_ben_rank_direct_funding |country), data = gali_joined, family=binomial)
+
+fit3fc_c <- glmer(participated ~ accel_ben_rank_direct_funding*DOMCREDITGDP + (accel_ben_rank_direct_funding |country)+ HC_index + female_pct, data = gali_joined, family=binomial)
+
+fit0sc <- glmer(participated ~ accel_ben_rank_network + (accel_ben_rank_network |country), data = gali_joined, family=binomial)
+
+fit0sc_c <- glmer(participated ~ accel_ben_rank_network + (accel_ben_rank_network |country)+ HC_index + female_pct, data = gali_joined, family=binomial)
+
+fit1sc <- glmer(participated ~ accel_ben_rank_network*EOSQ109 + (accel_ben_rank_network | country), data = gali_joined, family=binomial)
+
+fit1sc_c <- glmer(participated ~ accel_ben_rank_network*EOSQ109 + (accel_ben_rank_network | country)+ HC_index + female_pct, data = gali_joined, family=binomial)
+
+```
+
+```{r message=FALSE, warning=FALSE}
+#Summary tables
+
+hc0 <- summary_table_z(summary(fit0hc))
+hc0_c <- summary_table_z(summary(fit0hc_c))
+hc1 <- summary_table_z(summary(fit1hc))
+hc1_c <- summary_table_z(summary(fit1hc_c))
+fc0 <- summary_table_z(summary(fit0fc))
+fc0_c <- summary_table_z(summary(fit0fc_c))
+fc1 <- summary_table_z(summary(fit1fc))
+fc1_c <- summary_table_z(summary(fit1fc_c))
+fc2 <- summary_table_z(summary(fit2fc))
+fc2_c <- summary_table_z(summary(fit2fc_c))
+fc3 <- summary_table_z(summary(fit3fc))
+fc3_c <- summary_table_z(summary(fit3fc_c))
+sc0 <- summary_table_z(summary(fit0sc))
+sc0_c <- summary_table_z(summary(fit0sc_c))
+sc1 <- summary_table_z(summary(fit1sc))
+sc1_c <- summary_table_z(summary(fit1sc_c))
+
+rownames(hc0) <- c("Intercept","Attention to Human capital(AHC)")
+rownames(hc0_c) <- c("Intercept","Attention to Human capital(AHC)", "HCI", "GC")
+#rownames(hc1) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
+rownames(hc1_c) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees", "HCI", "GC")
+#rownames(fc0) <- c("Intercept","Attention to Financial capital")
+rownames(fc0_c) <- c("Intercept","Attention to Financial capital", "HCI", "GC")
+#rownames(fc1) <- c("Intercept","AFC", "Financing of SMEs", "AFCxFinancing of SMEs")
+rownames(fc1_c) <- c("Intercept","AFC", "Financing of SMEs", "AFCxFinancing of SMEs", "HCI", "GC")
+#rownames(fc2) <- c("Intercept","AFC", "VC Availability", "AFCxVC Availability")
+rownames(fc2_c) <- c("Intercept","AFC", "VC Availability", "AFCxVC Availability", "HCI", "GC")
+#rownames(fc3) <- c("Intercept","AFC", "Domestic Credit Gaps", "AFCxDomestic Credit Gaps")
+rownames(fc3_c) <- c("Intercept","AFC", "Domestic Credit Gaps", "AFCxDomestic Credit Gaps", "HCI", "GC")
+#rownames(sc0) <- c("Intercept","Attention to Social capital")
+rownames(sc0_c) <- c("Intercept","Attention to Social capital", "HCI", "GC")
+#rownames(sc1) <- c("Intercept","ASC", "State of cluster development","ASCxState of cluster development")
+rownames(sc1_c) <- c("Intercept","ASC", "State of cluster development","ASCxState of cluster development", "HCI", "GC")
+
+hc_zero <- cbindX(hc0_c[,-1], hc0[,-1]) 
+hc_one <- cbindX(hc1_c[,-1], hc1[,-1]) 
+fc_zero <- cbindX(fc0_c[,-1], fc0[,-1]) 
+fc_one <- cbindX(fc1_c[,-1], fc1[,-1])
+fc_two <- cbindX(fc2_c[,-1], fc2[,-1]) 
+fc_three <- cbindX(fc3_c[,-1], fc3[,-1]) 
+sc_zero <- cbindX(sc0_c[,-1], sc0[,-1]) 
+sc_one <- cbindX(sc1_c[,-1], sc1[,-1]) 
+
+```
+
+```{r }
+#Print summaries 
+
+kable(hc_zero, booktabs = T, caption = "Table 1: Effect of attention to human capital", escape = F) %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
+
+kable(hc_one, caption = "Table 2: Effect of congruency of venture attention and institutional level of human capital", format = "latex") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
+
+kbl(fc_zero, caption = "Table 3: Effect of attention to financial capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
+
+kbl(fc_one, caption = "Table 4: Effect of congruency of venture attention and institutional level (SME financing) of financial capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
+
+kbl(fc_two, caption = "Table 5: Effect of congruency of venture attention and institutional level (VC) of financial capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
+
+kbl(fc_three, caption = "Table 6: Effect of congruency of venture attention and institutional level (Credit gaps) of financial capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
+
+kbl(sc_zero, caption = "Table 7: Effect of attention to social capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
+
+kbl(sc_one, caption = "Table 8: Effect of congruency of venture attention and institutional level of social capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
+
+#kable(sc1_c[,-1], escape = FALSE, caption = "Table 16: Effect of congruency of venture attention and institutional level of social capital - Model with controls")
+
+```
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+#Outcome: Resource acquistion 
+library(lme4)
 
 fit00hc <- lmer(hr_tot ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country), data = gali_joined, REML = F)
 
 fit11hc <- lmer(hr_tot ~  accel_ben_rank_business_skills*EOSQ403 + (accel_ben_rank_business_skills|country), data = gali_joined, REML = F)
 
-hc0 <- summary_table_z(summary(fit0hc))
-hc1 <- summary_table_z(summary(fit1hc))
-hc00 <- summary_table(summary(fit00hc))
-hc11 <- summary_table(summary(fit11hc))
-
-rownames(hc0) <- c("Intercept","Attention to Human capital(AHC)")
-rownames(hc1) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
-rownames(hc00) <- c("Intercept","Attention to Human capital")
-rownames(hc11) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
-
-kable(hc0[,-1], escape = FALSE) 
-kable(hc1[,-1], escape = FALSE)
-kable(hc00[,-1], escape = FALSE)
-kable(hc11[,-1], escape = FALSE)
-
-
-```
-
-#Mixed model analysis - Financial capital
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-library(lme4)
-fit0fc <- glmer(participated ~  accel_ben_rank_direct_funding + (accel_ben_rank_direct_funding|country), data = gali_joined, family=binomial)
-
-fit1fc <- glmer(participated ~ accel_ben_rank_direct_funding*EOSQ425 + (accel_ben_rank_direct_funding |country ), data = gali_joined, family=binomial)
-
-fit2fc <- glmer(participated ~ accel_ben_rank_direct_funding*EOSQ089 + (accel_ben_rank_direct_funding |country ), data = gali_joined, family=binomial)
-
-fit3fc <- glmer(participated ~ accel_ben_rank_direct_funding*DOMCREDITGDP + (accel_ben_rank_direct_funding |country), data = gali_joined, family=binomial)
-
-summary(fit0fc)
-summary(fit1fc)
-summary(fit2fc)
-summary(fit3fc)
-
-fit00fc <- lmer(capital_raised_tot ~   + (accel_ben_rank_direct_funding|country), data = gali_joined, REML = F)
+fit00fc <- lmer(capital_raised_tot ~ + accel_ben_rank_direct_funding+ (accel_ben_rank_direct_funding|country), data = gali_joined, REML = F)
 
 fit11fc <- lmer(capital_raised_tot ~ accel_ben_rank_direct_funding*EOSQ425 + (accel_ben_rank_direct_funding |country ), data = gali_joined, REML = F)
 
@@ -643,36 +813,40 @@ fit22fc <- lmer(capital_raised_tot ~ accel_ben_rank_direct_funding*EOSQ089 + (ac
 
 fit33fc <- lmer(capital_raised_tot ~ accel_ben_rank_direct_funding*DOMCREDITGDP + (accel_ben_rank_direct_funding |country), data = gali_joined, REML = F)
 
-summary(fit00fc)
-summary(fit11fc)
-summary(fit22fc)
-summary(fit33fc)
-
-```
-
-#Mixed model analysis - Social capital
-
-```{r echo=FALSE, message=FALSE, warning=FALSE}
-fit0sc <- lmer(participated ~ accel_ben_rank_network + (accel_ben_rank_network |country), data = gali_joined, REML = F)
-
-fit1sc <- lmer(participated ~ accel_ben_rank_network*EOSQ109 + (accel_ben_rank_network | country), data = gali_joined, REML = F)
-
-coef(summary(fit0sc))
-coef(summary(fit1sc))
-
-
-
 fit00sc <- lmer(equity_sources_tot ~ accel_ben_rank_network + (accel_ben_rank_network |country), data = gali_joined, REML = F)
 
 fit11sc <- lmer(equity_sources_tot ~ accel_ben_rank_network*EOSQ109 + (accel_ben_rank_network | country), data = gali_joined, REML = F)
 
-coef(summary(fit00sc))
-coef(summary(fit11sc))
+hc00 <- summary_table(summary(fit00hc))
+hc11 <- summary_table(summary(fit11hc))
+fc00 <- summary_table(summary(fit00fc))
+fc11 <- summary_table(summary(fit11fc))
+fc22 <- summary_table(summary(fit22fc))
+fc33 <- summary_table(summary(fit33fc))
+sc00 <- summary_table(summary(fit00sc))
+sc11 <- summary_table(summary(fit11sc))
+
+
+rownames(hc00) <- c("Intercept","Attention to Human capital")
+rownames(hc11) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
+rownames(fc00) <- c("Intercept","Attention to Financial capital")
+rownames(fc11) <- c("Intercept","AFC", "Financing of SMEs", "AFCxFinancing of SMEs")
+rownames(fc22) <- c("Intercept","AFC", "VC Availability", "AFCxVC Availability")
+rownames(fc33) <- c("Intercept","AFC", "Domestic Credit Gaps", "AFCxDomestic Credit Gaps")
+rownames(sc00) <- c("Intercept","Attention to Social capital")
+rownames(sc11) <- c("Intercept","ASC", "State of cluster development","ASCxState of cluster development")
+    
+
+#kable(hc00[,-1], escape = FALSE)
+#kable(hc11[,-1], escape = FALSE)
+#kable(fc00[,-1], escape = FALSE)
+#kable(fc11[,-1], escape = FALSE)
+#kable(fc22[,-1], escape = FALSE)
+#kable(fc33[,-1], escape = FALSE)
+#kable(sc00[,-1], escape = FALSE)
+#kable(sc11[,-1], escape = FALSE, caption = "This is the table caption")
 
 ```
-
-# Data and Methods
-
 
 
 # Discussion
