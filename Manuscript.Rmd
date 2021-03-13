@@ -36,7 +36,7 @@ floatsintext      : no
 figurelist        : no
 tablelist         : no
 footnotelist      : no
-linenumbers       : yes
+linenumbers       : no
 mask              : no
 draft             : no
 
@@ -53,7 +53,7 @@ r_refs("r-references.bib")
 ```{r analysis-preferences}
 # Seed for random number generation
 set.seed(42)
-knitr::opts_chunk$set(cache.extra = knitr::rand_seed)
+knitr::opts_chunk$set(cache.extra = knitr::rand_seed, warning = F, message = F, fig.pos = "!H", out.extra = "")
 #options(knitr.table.format = "latex")
 ```
 
@@ -190,9 +190,7 @@ The following equation (formulas) show all the models by outcome category. Of no
 (17)	*Revenue ~  AHC + (AHC | Country)* 
 (18)	*Revenue ~  AHC + (AHC x Ease of finding skilled employees | Country)*
 (19)	*Revenue ~  AFC + (AFC | Country)*
-(20)	*Revenue ~  AFC + (AFC x Financing of SMEs| Country)*   
-(21)	*Revenue ~  AFC + (AFC x VC availability | Country)*   
-(22)	*Revenue ~  AFC + (AFC x Domestic Credit Gaps | Country)*   
+(20)	*Revenue ~  AFC + (AFC x Financing of SMEs| Country) + (AFC x VC availability | Country) + (AFC x Domestic Credit Gaps | Country)*   
 (23)	*Revenue ~  ASC + (ASC | Country)*   
 (24)	*Revenue ~  ASC + (ASC x State of cluster development | Country)*
 
@@ -208,7 +206,6 @@ library(psych)
 library(knitr)
 library(preprocessCore)
 library(kableExtra)
-
 ```
 
 ```{r Countries to analyse in main sample, message=FALSE, warning=FALSE, include=FALSE}
@@ -282,8 +279,9 @@ gali <- gali %>%
 
 ```
 
-#CGI data
+
 ```{r message=FALSE, warning=FALSE, include=FALSE}
+#CGI data
 gci <- import("Data/GCI_2018.xlsx")
 
 gci <- filter(gci, `Series Global ID` == "EOSQ089" |
@@ -313,9 +311,10 @@ gci <- gci %>%
               values_from = score)
 ```
 
-#Plotting all countries along the 3 dimensions 
+
 
 ```{r echo=FALSE, fig.height=10, fig.width=10, message=FALSE, warning=FALSE}
+#Plotting all countries along the 3 dimensions 
 
 library(plot3D)
 
@@ -377,8 +376,6 @@ gali <- filter(gali,
               accel_ben_rank_access_entreprene != accel_ben_rank_aware_cred )
 
 ```
-
-
 
 ```{r Human capital index}
 ##Control variables 
@@ -628,7 +625,6 @@ summary_table <- function(x){ x$coefficients %>%
       "$b$" = "Estimate"
     , "SE" = "Std. Error"
     , "$t$" = "t value"
-    , "$p$" = "Pr(>|t|)"
   ) %>%
   mutate(
     Effect = papaja:::prettify_terms(rownames(.))
@@ -638,7 +634,7 @@ summary_table <- function(x){ x$coefficients %>%
     , gt1 = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
     , zero = c(TRUE, TRUE, TRUE, TRUE, FALSE, FALSE)
   ) %>%
-  select(Effect, `$b$`, `SE`, `$t$`, `$p$`)}
+  select(Effect, `$b$`, `SE`, `$t$`)}
 
 #for glmer
 
@@ -723,19 +719,12 @@ sc1_c <- summary_table_z(summary(fit1sc_c))
 
 rownames(hc0) <- c("Intercept","Attention to Human capital(AHC)")
 rownames(hc0_c) <- c("Intercept","Attention to Human capital(AHC)", "HCI", "GC")
-#rownames(hc1) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
 rownames(hc1_c) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees", "HCI", "GC")
-#rownames(fc0) <- c("Intercept","Attention to Financial capital")
 rownames(fc0_c) <- c("Intercept","Attention to Financial capital", "HCI", "GC")
-#rownames(fc1) <- c("Intercept","AFC", "Financing of SMEs", "AFCxFinancing of SMEs")
 rownames(fc1_c) <- c("Intercept","AFC", "Financing of SMEs", "AFCxFinancing of SMEs", "HCI", "GC")
-#rownames(fc2) <- c("Intercept","AFC", "VC Availability", "AFCxVC Availability")
 rownames(fc2_c) <- c("Intercept","AFC", "VC Availability", "AFCxVC Availability", "HCI", "GC")
-#rownames(fc3) <- c("Intercept","AFC", "Domestic Credit Gaps", "AFCxDomestic Credit Gaps")
 rownames(fc3_c) <- c("Intercept","AFC", "Domestic Credit Gaps", "AFCxDomestic Credit Gaps", "HCI", "GC")
-#rownames(sc0) <- c("Intercept","Attention to Social capital")
 rownames(sc0_c) <- c("Intercept","Attention to Social capital", "HCI", "GC")
-#rownames(sc1) <- c("Intercept","ASC", "State of cluster development","ASCxState of cluster development")
 rownames(sc1_c) <- c("Intercept","ASC", "State of cluster development","ASCxState of cluster development", "HCI", "GC")
 
 hc_zero <- cbindX(hc0_c[,-1], hc0[,-1]) 
@@ -752,52 +741,50 @@ sc_one <- cbindX(sc1_c[,-1], sc1[,-1])
 ```{r }
 #Print summaries 
 
-kable(hc_zero, booktabs = T, caption = "Table 1: Effect of attention to human capital", escape = F) %>%
+kable(hc_zero, escape = F, caption = "Effect of attention to human capital") %>%
   add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
   kable_styling(latex_options = c("repeat_header")) %>%
   pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
 
-kable(hc_one, caption = "Table 2: Effect of congruency of venture attention and institutional level of human capital", format = "latex") %>%
+kable(hc_one, escape = F, caption = "Effect of congruency of venture attention and institutional level of human capital", format = "latex") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 5, 6, latex_gap_space = "2em")
+
+kbl(fc_zero, escape = F, caption = "Effect of attention to financial capital") %>%
   add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
   kable_styling(latex_options = c("repeat_header")) %>%
   pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
 
-kbl(fc_zero, caption = "Table 3: Effect of attention to financial capital") %>%
+kbl(fc_one, escape = F, caption = "Effect of congruency of venture attention and institutional level (SME financing) of financial capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 5, 6, latex_gap_space = "2em")
+
+kbl(fc_two, escape = F, caption = "Effect of congruency of venture attention and institutional level (VC) of financial capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 5, 6, latex_gap_space = "2em")
+
+kbl(fc_three, escape = F, caption = "Effect of congruency of venture attention and institutional level (Credit gaps) of financial capital") %>%
+  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
+  kable_styling(latex_options = c("repeat_header")) %>%
+  pack_rows("Control variables", 5, 6, latex_gap_space = "2em")
+
+kbl(sc_zero, escape = F, caption = "Effect of attention to social capital") %>%
   add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
   kable_styling(latex_options = c("repeat_header")) %>%
   pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
 
-kbl(fc_one, caption = "Table 4: Effect of congruency of venture attention and institutional level (SME financing) of financial capital") %>%
+kbl(sc_one, escape = F, caption = "Effect of congruency of venture attention and institutional level of social capital") %>%
   add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
   kable_styling(latex_options = c("repeat_header")) %>%
-  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
-
-kbl(fc_two, caption = "Table 5: Effect of congruency of venture attention and institutional level (VC) of financial capital") %>%
-  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
-  kable_styling(latex_options = c("repeat_header")) %>%
-  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
-
-kbl(fc_three, caption = "Table 6: Effect of congruency of venture attention and institutional level (Credit gaps) of financial capital") %>%
-  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
-  kable_styling(latex_options = c("repeat_header")) %>%
-  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
-
-kbl(sc_zero, caption = "Table 7: Effect of attention to social capital") %>%
-  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
-  kable_styling(latex_options = c("repeat_header")) %>%
-  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
-
-kbl(sc_one, caption = "Table 8: Effect of congruency of venture attention and institutional level of social capital") %>%
-  add_header_above(c(" ", "Model w/ controls" = 4, "Model w/o controls" = 4), italic = T) %>%
-  kable_styling(latex_options = c("repeat_header")) %>%
-  pack_rows("Control variables", 3, 4, latex_gap_space = "2em")
-
-#kable(sc1_c[,-1], escape = FALSE, caption = "Table 16: Effect of congruency of venture attention and institutional level of social capital - Model with controls")
+  pack_rows("Control variables", 5, 6, latex_gap_space = "2em")
 
 ```
 
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE}
 #Outcome: Resource acquistion 
 library(lme4)
 
@@ -816,6 +803,10 @@ fit33fc <- lmer(capital_raised_tot ~ accel_ben_rank_direct_funding*DOMCREDITGDP 
 fit00sc <- lmer(equity_sources_tot ~ accel_ben_rank_network + (accel_ben_rank_network |country), data = gali_joined, REML = F)
 
 fit11sc <- lmer(equity_sources_tot ~ accel_ben_rank_network*EOSQ109 + (accel_ben_rank_network | country), data = gali_joined, REML = F)
+```
+
+```{r echo=FALSE}
+#summary tables
 
 hc00 <- summary_table(summary(fit00hc))
 hc11 <- summary_table(summary(fit11hc))
@@ -826,7 +817,6 @@ fc33 <- summary_table(summary(fit33fc))
 sc00 <- summary_table(summary(fit00sc))
 sc11 <- summary_table(summary(fit11sc))
 
-
 rownames(hc00) <- c("Intercept","Attention to Human capital")
 rownames(hc11) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
 rownames(fc00) <- c("Intercept","Attention to Financial capital")
@@ -835,16 +825,89 @@ rownames(fc22) <- c("Intercept","AFC", "VC Availability", "AFCxVC Availability")
 rownames(fc33) <- c("Intercept","AFC", "Domestic Credit Gaps", "AFCxDomestic Credit Gaps")
 rownames(sc00) <- c("Intercept","Attention to Social capital")
 rownames(sc11) <- c("Intercept","ASC", "State of cluster development","ASCxState of cluster development")
-    
 
-#kable(hc00[,-1], escape = FALSE)
-#kable(hc11[,-1], escape = FALSE)
-#kable(fc00[,-1], escape = FALSE)
-#kable(fc11[,-1], escape = FALSE)
-#kable(fc22[,-1], escape = FALSE)
-#kable(fc33[,-1], escape = FALSE)
-#kable(sc00[,-1], escape = FALSE)
-#kable(sc11[,-1], escape = FALSE, caption = "This is the table caption")
+hc <- cbindX(hc11[,-1], hc00[,-1]) 
+fc <- cbindX(fc11[,-1], fc00[,-1]) 
+sc <- cbindX(sc11[,-1], sc00[,-1]) 
+
+```
+
+```{r echo=FALSE}
+#Print summaries 
+
+kable(hc, escape = F, caption = "Effect on total employees") %>%
+  add_header_above(c(" ", "Congruence" = 3, "AHC only" = 3), italic = T) 
+
+kable(fc, escape = F, caption = "Effect on capital raised") %>%
+  add_header_above(c(" ", "Congruence" = 3, "AFC only" = 3), italic = T) 
+
+kable(fc22[,-1], escape = F, caption = "Effect on capital raised") 
+
+kable(fc33[,-1], escape = F, caption = "Effect on capital raised")
+
+kable(sc, escape = F, caption = "Effect on sources of capital") %>%
+  add_header_above(c(" ", "Congruence" = 3, "ASC only" = 3), italic =T)
+
+
+```
+
+
+```{r}
+#Outcome: Revenue
+library(lme4)
+
+fit0_hc <- lmer(revenue_tot ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country), data = gali_joined, REML = F)
+
+fit1_hc <- lmer(revenue_tot ~  accel_ben_rank_business_skills*EOSQ403 + (accel_ben_rank_business_skills|country), data = gali_joined, REML = F)
+
+fit0_fc <- lmer(revenue_tot ~ + accel_ben_rank_direct_funding+ (accel_ben_rank_direct_funding|country), data = gali_joined, REML = F)
+
+fit1_fc <- lmer(revenue_tot ~ + accel_ben_rank_direct_funding*EOSQ425+ accel_ben_rank_direct_funding*EOSQ089 + accel_ben_rank_direct_funding*DOMCREDITGDP + (accel_ben_rank_direct_funding|country), data = gali_joined, REML = F)
+
+fit0_sc <- lmer(revenue_tot ~ accel_ben_rank_network + (accel_ben_rank_network |country), data = gali_joined, REML = F)
+
+fit1_sc <- lmer(revenue_tot ~ accel_ben_rank_network*EOSQ109 + (accel_ben_rank_network | country), data = gali_joined, REML = F)
+
+```
+
+```{r}
+#summary tables
+
+hc_0 <- summary_table(summary(fit0_hc))
+hc_1 <- summary_table(summary(fit1_hc))
+fc_0 <- summary_table(summary(fit0_fc))
+fc_1 <- summary_table(summary(fit1_fc))
+sc_0 <- summary_table(summary(fit0_sc))
+sc_1 <- summary_table(summary(fit1_sc))
+
+rownames(hc_0) <- c("Intercept","Attention to Human capital")
+rownames(hc_1) <- c("Intercept","AHC", "Ease of finding skilled employees", "AHCxEase of finding skilled employees")
+rownames(fc_0) <- c("Intercept","Attention to Financial capital")
+rownames(fc_1) <- c("Intercept","AFC", "Financing of SMEs", "VC Availability", "Domestic Credit Gaps", "AFCxFinancing of SMEs", "AFCxVC Availability", "AFCxDomestic Credit Gaps")
+rownames(sc_0) <- c("Intercept","Attention to Social capital")
+rownames(sc_1) <- c("Intercept","ASC", "State of cluster development","ASCxState of cluster development")
+
+hc_r <- cbindX(hc_1[,-1], hc_0[,-1]) 
+fc_r <- cbindX(fc_1[,-1], fc_0[,-1]) 
+sc_r <- cbindX(sc_1[,-1], sc_0[,-1]) 
+
+```
+
+```{r}
+#Print summaries 
+
+kable(hc_r, escape = F, caption = "Effect on revenues", digits = 0) %>%
+  add_header_above(c(" ", "Congruence" = 3, "AHC only" = 3), italic = T) %>%
+kable_styling(font_size = 8)
+
+kable(fc_r, escape = F, caption = "Effect on revenues", digits = 0) %>%
+  add_header_above(c(" ", "Congruence" = 3, "AFC only" = 3), italic = T) %>%
+kable_styling(font_size = 8)
+
+kable(sc_r, escape = F, caption = "Effect on revenues", digits = 0) %>%
+  add_header_above(c(" ", "Congruence" = 3, "ASC only" = 3), italic =T) %>%
+kable_styling(font_size = 8)
+
 
 ```
 
