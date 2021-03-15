@@ -19,7 +19,6 @@ affiliation:
 
 authornote: |
   Lundquist College of Business 
-
   Department of Management 
 
 abstract: |
@@ -477,7 +476,7 @@ gali <- cbind(gali %>%
 
 ```
 
-```{r fig.height=5, fig.width=8}
+```{r fig.height=7, fig.width=9}
 #Distribution of attention 
 
 a <- gali %>%
@@ -498,7 +497,8 @@ a  %>%
   facet_grid(~Attention) +
   theme_bw()+
   ylab("")+
-  xlab("Attention score")
+  xlab("Attention score")+
+  labs(title =  "Distribution of venture attention to resources by type of resource")
 
 #Some countries are classified as "High income" while other are "High Income". I will capitilize all first letter to solve this issue
 
@@ -517,7 +517,8 @@ a  %>%
   facet_grid(vars(`Income group`), vars(Attention)) +
   theme_bw() +
   ylab("")+
-  xlab("Attention score")
+  xlab("Attention score")+
+  labs(title =  "Distribution of venture attention to resources by type of resource and country classification")
 
 ```
 
@@ -586,11 +587,18 @@ b[is.na(b)] <- "High Income"  #The two countries with NA values are USA and UK b
 
 b$`Income group` <- gsub("(^|[[:space:]])([[:alpha:]])", "\\1\\U\\2", b$`Income group`, perl=TRUE)
 
+#Function to wrap long titles 
+wrapper <- function(x, ...) 
+{
+  paste(strwrap(x, ...), collapse = "\n")
+}
+
 filter(b, Attention == "Network")  %>%
   ggplot(aes(Score, `Total Equity Sources`)) +
   geom_point()  +
   facet_grid(~`Income group`)+
   xlab("Attention to Network")+
+  ggtitle(wrapper("Correlation between the venture network and the venture attention level to network by country classification", width = 80))+
   theme_bw()
 
 filter(b, Attention == "Direct Funding")  %>%
@@ -598,6 +606,7 @@ filter(b, Attention == "Direct Funding")  %>%
   geom_point()  +
   facet_grid(~`Income group`)+
   xlab("Attention to Direct Funding")+
+  ggtitle(wrapper("Correlation between  the venture’s total capital raised and the its attention level to direct funding by country classification", width = 80))+
   theme_bw()
 
 ```
@@ -933,6 +942,8 @@ It is important to highlight here, that not only I find no significant effect bu
 **Performance**
 
 Based on the results of resource acquisition we would expect similar results for venture performance (hypothesis 3) since revenues are often accumulated post resource acquisition. We can consider this part of the analysis as a robustness check for the previous analysis on resource acquisition. Tables 14 to 16 confirm these expectations. I find only null effects of the impact of venture attention to a resource and its congruency level with the institutional level of the resource on performance (measured based on firm revenues) post acceleration program. 
+
+# Conclusion 
 
 There are several channels to interpret the results of all three outcomes. The most plausible explanation is that at their early stages of venturing, entrepreneurs do not have to align their attention to resources with the availability of resources in their institutional environment. However, their attention to internal human capital (i.e. building their own business skills) becomes important if we consider the outcome as being selection to an incubation program instead to mobilize resources and prepare for long-term resource acquisition. Resource acquisition is a long-term goal and that is why I do not see any effects in the short term (2 years post acceleration). In contrast, selection to an incubation program is a short-term goal that opens the door for the long-term effects and that is how ventures in our sample should approach their resource base strategy (i.e. mobilization first and acquisition would follow).
 
