@@ -147,7 +147,7 @@ Correspondence concerning this article should be addressed to Ouafaa Hmaddi, 292
 \affiliation{\vspace{0.5cm}\textsuperscript{1} University of Oregon}
 
 \abstract{
-One or two sentences providing a \textbf{basic introduction} to the field, comprehensible to a scientist in any discipline.
+Early stage entrepreneurs have access to limited resources and must decide what should garner their attention. The literatures on entrepreneurial resources and entrepreneurial attention show mixed results and often do not take into account the institutional context of the venture. I approach the question of entrepreneurial attention from an institutional perspective using the Global Accelerator Learning Initiative Data. In contrast to expectation based on the literature, I find that entrepreneurs do not have to align their attention to resources with the availability of resources in their institutional environment. However, their attention to internal human capital (i.e.~building their own business skills) becomes important if we consider the outcome as being selection to an incubation program to mobilize resources and prepare for long-term resource acquisition. Resource acquisition is a long-term goal and that is why I do not see any effects in the short term. In contrast, selection to an incubation program is a short-term goal that opens the door for the long-term effects and that is how early stage ventures should approach their resource base strategy. Mobilization comes first and acquisition would follow. Thus, the question is not what resources to seek, but when to seek mobilization and when to engage in acquisition of a resource.
 }
 
 
@@ -180,8 +180,14 @@ Therefore, I state the following hypotheses about the relationship between the c
 \hypertarget{analysis}{%
 \section{Analysis}\label{analysis}}
 
-\hypertarget{measures}{%
-\subsection{Measures}\label{measures}}
+\hypertarget{data-and-measures}{%
+\subsection{Data and Measures}\label{data-and-measures}}
+
+The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information -- collected during program applications -- about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at \href{www.galidata.org/data-request}{GALI Data}. This is multi-country dataset. It typically contains hundreds of ventures per country.
+
+When entrepreneurs apply to a GALI-participating accelerator, they are asked to complete a standardized survey which asks basic questions about their venture's business model, financial performance, and founding team. Then, after one year, they are asked to complete a follow-up survey, whether or not they were accepted into the program to which they applied.
+
+The initial sample consists of 22,928 venture from 73 countries. I set aside nonprofit organizations and observations that are missing relevant venture information or preference ranking, resulting in 15981 observations in the final sample. All financial statistics are in United States Dollars (USD).
 
 \textbf{Predictors}
 
@@ -189,14 +195,19 @@ Therefore, I state the following hypotheses about the relationship between the c
 
 Respondents are asked to rank the seven benefits on a scale from one to seven, with one being the most important and seven being the least important. These rankings were reverse-coded to facilitate interpretation of the effects in order of increased importance, with 1 being the least important and 7 the most important. The benefits that accelerators provide consistently ranked in the top three were network development, business skills development, and securing direct venture funding. I assume that the early-stage ventures' attention allocation reflects the rankings given in their questionnaires. The questionnaire enforces a rule that respondents need to enter a ranking for all seven benefits and no tie is allowed. I exclude observations that do not have complete ranking of the seven items or because they have ties in the rankings.
 
+Figure 3 shows us the distribution of venture attention to resources by type of resource. We observe that the majority of entrepreneurs focus their attention on direct finding, access to investors and general networking. Business training comes second in the entreprenerus radar. Credibility and access to peers are the two resources that entrepreneurs rank the lowest in their preference and thus they do not pay attention to acquiring these resources. Figure 4 helps us dive in into this distribution by classification of country in terms of income (High income, upper middle income, lower middle income, and low income). We see that the distribution is very similar regardless of the country classification.
+
 \emph{Institutional level capital} To measure the level of capital of a certain resource at the country level, I used data from the World Economic Forum Global Competitiveness Index (GCI). Specificaly, I used the variable State of cluster development as a measure for institutional level social capital; Ease of finding skilled employees as a measure for institutional level human capital; and Venture capital (VC) availability, Financing of Small and Medium Enterprises (SMEs), Domestic Credit Gaps as different measures of institutional level financial capital. While former measures of fiancial capital are self-explanatory, the latter variable is defined loans, purchases of non-equity securities, and trade credits and other accounts receivable provided to the private sector by financial corporations as a percentage of gross domestic products (GDP).
+
+Figure 1 displays all countries in the sample with their positioning along the three dimensions of institutional capital. We see that the United States has the highest scores along all three dimensions, meaning that it has a strong infrastructure in terms of all three of forms of capital. This explains the mixed results of the research on attention capital given that the majority of this literature is based in the US context. Namely, entrepreneurs in the US operate within a rich resource environment and attention to resources depends more in their own strategy and initial resource capital rather than their institutional level captial. On the other side of the figure we find Angola as the country with lowest scores along all the dimension of institutional level capital. Figure 2 zooms in to get a closer look at the group of countries positioned in the middle at the center of figure 1.
 
 \textbf{Outcomes}
 
-\emph{Resource mobilization} is coded as a dichotomous measure \emph{Participated} equal to one
-if an applicant participate to an accelerator program of choice, and zero otherwise. I assume that pariticipating to an acceleration program is the first step to mobiliza all types of resources provided by the accelerator.
+\emph{Resource mobilization} is coded as a dichotomous measure \emph{Participated} equal to one if an applicant participate to an accelerator program of choice, and zero otherwise. I assume that pariticipating to an acceleration program is the first step to mobiliza all types of resources provided by the accelerator.
 
 \emph{Resource acquisition} once participants mobilize resources through participation to an accelerator, they engage in acquiring resources that garner their attention. These resources can translate into (a) raising capital from one source or many sources depending on (b) the entrepreneurs social capital (i.e.~Network) or (c) hiring employees. (a), (b), and (c) are all resource acquisition outcomes.
+
+Figure 5 shows us the correlation between the venture network (i.e.~total equity sources) and the venture attention level to network by country classification. Similarly, Figure 6 shows us the correlation between the venture's total capital raised and the its attention level to direct funding by country classification.
 
 \emph{Performance} finaly to measure the impact on venture performance, I use the variable \emph{Revenue} as a proxy for this outcome. This is the most commonly used performance indicator in the management in strategy litrature.
 
@@ -208,92 +219,44 @@ To create an index, I use the quantile normalization technique to reduce the eff
 
 \emph{Gender composition} the proportion female co-founders in each venture team.
 
-\hypertarget{data}{%
-\subsection{Data}\label{data}}
-
-The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information -- collected during program applications -- about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at \href{www.galidata.org/data-request}{GALI Data}. This is multi-country dataset. It typically contains hundreds of ventures per country.
-
-When entrepreneurs apply to a GALI-participating accelerator, they are asked to complete a standardized survey which asks basic questions about their venture's business model, financial performance, and founding team. Then, after one year, they are asked to complete a follow-up survey, whether or not they were accepted into the program to which they applied.
-
-I set aside XXX nonprofit organizations and XXX observations that are missing relevant venture information or preference ranking, resulting in xxx observations in the final sample. All financial statistics are in United States Dollars (USD). ********
-
 \hypertarget{methods}{%
 \subsection{Methods}\label{methods}}
 
-The ventures in our sample are nested within countries. To account for such nested (or hierarchical) structure of the data, I opt for a linear mixed effects model to estimate the effects of each resource alone and when it interacts with institutional level of the resource. This helps us account for fixed effects and random effects associated with non-nested grouping factors. Namely, it allows us to take into account the institutional (i.e.~country) effect on venture outcomes and quantify the extent to which differences in outcomes reflect differences in the effects of country-specific features, specifically institutional level capital.
+The ventures in the sample are nested within countries. To account for such nested (or hierarchical) structure of the data, I opt for a linear mixed effects model to estimate the effects of each resource alone and when it interacts with institutional level of the resource. This helps us account for fixed effects and random effects associated with non-nested grouping factors. Namely, it allows us to take into account the institutional (i.e.~country) effect on venture outcomes and quantify the extent to which differences in outcomes reflect differences in the effects of country-specific features, specifically institutional level capital.
 
-The following equation (formulas) show all the models by outcome category. Of note, I run all the following models with conrols and without controls as robustness check. Control vriables are HCI refering to Human Capital Index and GC refering to Gender composition (i.e.~female percentage in a team).
+The following equations show all the models by outcome category. Of note, I run all the initial models (i.e.~resource mobilization models) with conrols and without controls as robustness check. Control vriables are the Human Capital Index and Gender composition (i.e.~female percentage in a team) that were highlight in the previous section about measures. AHC, AFC, and ASC refer to our key predictors; Attention to Human Capital, Attention to Financial Capital, and Attention to Social Capital respectively.
 
 \textbf{Resource mobilization}
 
-\begin{enumerate}
-\def\labelenumi{(\arabic{enumi})}
-\tightlist
-\item
-  \emph{Participated \textasciitilde{} AHC + (AHC \textbar{} Country) ; AHC = Attention to Human Capital}
-\item
-  \emph{Participated \textasciitilde{} AHC + (AHC x Ease of finding skilled employees \textbar{} Country)}
-\item
-  \emph{Participated \textasciitilde{} AFC + (AFC \textbar{} Country) ; AHC = Attention to Financial Capital}
-\item
-  \emph{Participated \textasciitilde{} AFC + (AFC x Financing of SMEs\textbar{} Country)}\\
-\item
-  \emph{Participated \textasciitilde{} AFC + (AFC x VC availability \textbar{} Country)}\\
-\item
-  \emph{Participated \textasciitilde{} AFC + (AFC x Domestic Credit Gaps \textbar{} Country)}\\
-\item
-  \emph{Participated \textasciitilde{} ASC + (ASC \textbar{} Country) ; ASC = Attention to Social Capital}\\
-\item
-  \emph{Participated \textasciitilde{} ASC + (ASC x State of cluster development \textbar{} Country)}
-\end{enumerate}
+\[{Participated_i} =  \beta_0 + b AHC_i + Controls_i + \epsilon_i \]
+
+\[{Participated_i} =  \beta_0 + b_1 AHC_i + b_2 AHC_i * Ease of finding skilled employees_c+ Controls_i + \epsilon_i \]
+\[{Participated_i} =  \beta_0 + b AFC_i +Controls_i + \epsilon_i \]\\
+\[{Participated_i} =  \beta_0 + b_1 AFC_i + b_2 AFC_i * Financing of SMEs_c+ Controls_i + \epsilon_i \]
+\[{Participated_i} =  \beta_0 + b_1 AFC_i + b_2 AFC_i * VC availability_c+ Controls_i + \epsilon_i \]
+\[{Participated_i} =  \beta_0 + b_1 AFC_i + b_2 AFC_i * Domestic Credit Gaps_c+ Controls_i + \epsilon_i \]
+\[{Participated_i} =  \beta_0 + b ASC_i + Controls_i + \epsilon_i \]
+\[{Participated_i} =  \beta_0 + b_1 ASC_i + b_2 ASC_i * State of cluster development_c+ Controls_i + \epsilon_i \]
 
 \textbf{Resource acquisition}
 
-\begin{enumerate}
-\def\labelenumi{(\arabic{enumi})}
-\setcounter{enumi}{8}
-\tightlist
-\item
-  \emph{Total employees \textasciitilde{} AHC + (AHC \textbar{} Country)}
-\item
-  \emph{Total employees \textasciitilde{} AHC + (AHC x Ease of finding skilled employees \textbar{} Country)}
-\item
-  \emph{Capital Raised \textasciitilde{} AFC + (AFC \textbar{} Country)}
-\item
-  \emph{Capital Raised \textasciitilde{} AFC + (AFC x Financing of SMEs\textbar{} Country)}
-\item
-  \emph{Capital Raised \textasciitilde{} AFC + (AFC x VC availability \textbar{} Country)}
-\item
-  \emph{Capital Raised \textasciitilde{} AFC + (AFC x VC availability \textbar{} Country)}
-\item
-  \emph{Capital sources \textasciitilde{} ASC + (ASC \textbar{} Country)}\\
-\item
-  \emph{Capital sources \textasciitilde{} ASC + (ASC x State of cluster development \textbar{} Country)}
-\end{enumerate}
+\[{Total Employees_i} =  \beta_0 + b AHC_i + \epsilon_i \]
+\[{Total Employees_i} =  \beta_0 + b_1 AHC_i + b_2 AHC_i * Ease of finding skilled employees_c+ \epsilon_i \]
+\[{CapitalRaised_i} =  \beta_0 + b AFC_i + \epsilon_i \]
+\[{CapitalRaised_i} =  \beta_0 + b_1 AFC_i + b_2 AFC_i * Financing of SMEs_c + \epsilon_i \]
+\[{CapitalRaised_i} =  \beta_0 + b_1 AFC_i + b_2 AFC_i * VC availability_c + \epsilon_i \]
+\[{CapitalRaised_i} =  \beta_0 + b_1 AFC_i + b_2 AFC_i * Domestic Credit Gaps_c + \epsilon_i \]
+\[{CapitalSources_i} =  \beta_0 + b ASC_i + \epsilon_i \]
+\[{CapitalSources_i} =  \beta_0 + b_1 ASC_i + b_2 ASC_i * State of cluster development_c+ \epsilon_i \]
 
 \textbf{Performance}
 
-\begin{enumerate}
-\def\labelenumi{(\arabic{enumi})}
-\setcounter{enumi}{16}
-\tightlist
-\item
-  \emph{Revenue \textasciitilde{} AHC + (AHC \textbar{} Country)}
-\item
-  \emph{Revenue \textasciitilde{} AHC + (AHC x Ease of finding skilled employees \textbar{} Country)}
-\item
-  \emph{Revenue \textasciitilde{} AFC + (AFC \textbar{} Country)}
-\item
-  \emph{Revenue \textasciitilde{} AFC + (AFC x Financing of SMEs\textbar{} Country)}\\
-\item
-  \emph{Revenue \textasciitilde{} AFC + (AFC x VC availability \textbar{} Country)}\\
-\item
-  \emph{Revenue \textasciitilde{} AFC + (AFC x Domestic Credit Gaps \textbar{} Country)}\\
-\item
-  \emph{Revenue \textasciitilde{} ASC + (ASC \textbar{} Country)}\\
-\item
-  \emph{Revenue \textasciitilde{} ASC + (ASC x State of cluster development \textbar{} Country)}
-\end{enumerate}
+\[{Revenue_i} =  \beta_0 + b AHC_i + \epsilon_i \]
+\[{Revenue_i} =  \beta_0 + b_1 AHC_i + b_2 AHC_i * Ease of finding skilled employees_c+ \epsilon_i \]
+\[{Revenue_i} =  \beta_0 + b AFC_i + \epsilon_i \]
+\[{Revenue_i} =  \beta_0 + b_1 AFC_i + b_2 AFC_i * Financing of SMEs_c + b_3 AFC_i * VC availability_c + b_4 AFC_i * Domestic Credit Gaps_c + \epsilon_i \]
+\[{Revenue_i} =  \beta_0 + b ASC_i + \epsilon_i \]
+\[{Revenue_i} =  \beta_0 + b_1 ASC_i + b_2 ASC_i * State of cluster development_c+ \epsilon_i \]
 
 \hypertarget{data-analysis}{%
 \subsection{Data analysis}\label{data-analysis}}
@@ -323,7 +286,7 @@ I used R (Version 4.0.2; R Core Team, 2020b) and the R-packages \emph{caret} (Ve
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-18}Effect of attention to human capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of attention to human capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -346,7 +309,7 @@ Attention to Human capital(AHC) & 0.09 & 0.07 & 1.24 & 0.215 & 0.11 & 0.07 & 1.5
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level of human capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level of human capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -373,7 +336,7 @@ AHCxEase of finding skilled employees & 0.01 & 0.01 & 1.37 & 0.171 & -0.17 & 0.1
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-18}Effect of attention to financial capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of attention to financial capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -396,7 +359,7 @@ Attention to Financial capital & -0.19 & 0.06 & -3.02 & 0.003 & -0.19 & 0.06 & -
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (SME financing) of financial capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (SME financing) of financial capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -423,7 +386,7 @@ AFCxFinancing of SMEs & 0.01 & 0.01 & 1.30 & 0.193 & 0.00 & 0.07 & 0.05 & 0.959\
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (VC) of financial capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (VC) of financial capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -450,7 +413,7 @@ AFCxVC Availability & 0.01 & 0.01 & 1.31 & 0.190 & 0.01 & 0.05 & 0.28 & 0.778\\
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (Credit gaps) of financial capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (Credit gaps) of financial capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -477,7 +440,7 @@ AFCxDomestic Credit Gaps & 0.01 & 0.01 & 1.30 & 0.192 & 0.00 & 0.00 & 0.15 & 0.8
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-18}Effect of attention to social capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of attention to social capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -500,7 +463,7 @@ Attention to Social capital & 0.12 & 0.07 & 1.79 & 0.073 & 0.11 & 0.07 & 1.69 & 
 
 \begin{table}
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level of social capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level of social capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -630,7 +593,7 @@ ASCxState of cluster development & 0.17 & 0.06 & 2.94 & NA & NA & NA\\
 
 \caption{\label{tab:unnamed-chunk-24}Effect on revenues}
 \centering
-\fontsize{7}{9}\selectfont
+\fontsize{8}{10}\selectfont
 \begin{tabular}[t]{l|l|l|l|l|l|l}
 \hline
 \multicolumn{1}{c|}{\em{ }} & \multicolumn{3}{c|}{\em{Congruence}} & \multicolumn{3}{c}{\em{AHC only}} \\
@@ -652,7 +615,7 @@ AHCxEase of finding skilled employees & -2,337,599.95 & 2,803,682.74 & -0.83 & N
 
 \caption{\label{tab:unnamed-chunk-24}Effect on revenues}
 \centering
-\fontsize{7}{9}\selectfont
+\fontsize{8}{10}\selectfont
 \begin{tabular}[t]{l|l|l|l|l|l|l}
 \hline
 \multicolumn{1}{c|}{\em{ }} & \multicolumn{3}{c|}{\em{Congruence}} & \multicolumn{3}{c}{\em{AFC only}} \\
@@ -682,7 +645,7 @@ AFCxDomestic Credit Gaps & 5,897.33 & 98,489.71 & 0.06 & NA & NA & NA\\
 
 \caption{\label{tab:unnamed-chunk-24}Effect on revenues}
 \centering
-\fontsize{7}{9}\selectfont
+\fontsize{8}{10}\selectfont
 \begin{tabular}[t]{l|l|l|l|l|l|l}
 \hline
 \multicolumn{1}{c|}{\em{ }} & \multicolumn{3}{c|}{\em{Congruence}} & \multicolumn{3}{c}{\em{ASC only}} \\
@@ -700,8 +663,26 @@ ASCxState of cluster development & 825,623.52 & 4,199,015.96 & 0.20 & NA & NA & 
 \end{tabular}
 \end{table}
 
-\hypertarget{discussion}{%
-\section{Discussion}\label{discussion}}
+\hypertarget{results-and-discussion}{%
+\section{Results and Discussion}\label{results-and-discussion}}
+
+\textbf{Resource mobilization}
+
+I find no support for hypothesis 1, with exception for certain resources. Specifically, Table 1 shows that an increase in venture attention to human capital causes an increase in the venture's likelihood to participate to the acceleration program and mobilize resources. However, this effect is not statistically significant. The model is robust to the addition of control variables. Similarly, table 7 show that an increase in venture to attention social capital causes an increase in the venture's likelihood to mobilize resources within the acceleration program. These effects are not statistically signification. Table 3 on the other hand, show that an increase in venture attention to social capital results in a significant decrease in the venture's likelihood to mobilize resources. This shows that early stage ventures applying to accelerator programs benefit the most if they first focus on mobilizing human and social capital resources before turning attention to financial capital. To examine our hypotheses exploring these same relationships within the institutional context of the venture, we turn to tables 2, 4, 5, 6, and 8. When I interact the venture level attention to human capital with the institutional level human capital (Table 2), I find that attention to this resource results in a significant increase in the likelihood to mobilize resources within the accelerator program (\(b = 0.9\)), and the model is robust to control variables. In contrast, tables 3 to 5 show that attention to financial capital has a non-significant effect on the venture's likelihood to mobilize resources regardless of the institutional context. We find the same results whether we consider institutional level capital for SMEs, VC oriented ventures, or ventures seeking loans and other forms of financing from financial establishments. This is in line with our initial finding that human and social capital should garner the attention of ventures seeking resources in their early stage from incubators and accelerators. Finally, table 8 shows us that the congruency of venture attention and the institutional level of social capital does not have any significant effect on the venture's likelihood to mobilize resources.
+
+This first part of the analysis focuses on resource mobilization within accelerator programs and explores the relationship between venture attention to a certain type of resources and its influence on the venture's likelihood to participate to the program. I find that social and human capital are the key resources that should be on the venture's radar in their early stage of strategy formation. I then investigate the impact of the congruency between the venture attention and the institutional level capital to better understand these relationships within their institutional context. I find that human capital is not only one of the key resources to focus on but it becomes even more important if it aligns with the venture's country to provide skillful human resources.
+
+\textbf{Resource acquisition}
+
+Similar to hypothesis 1, I find no support for the second hypothesis. Table 9 shows the impact of venture attention to human capital and its congruency level with the institutional capital on the acquisition of human capital (total number of employees) post-acceleration program. I find no significant effect in the two models. Tables 10 to 12 show the impact of venture attention to financial capital and its congruency level with the institutional capital on the acquisition of financial capital (capital raised in USD) post-acceleration program. I find no significant effect in the two models. Finally, table 13 shows the the impact of venture attention to social capital and its congruency level with the institutional capital on the acquisition of social capital (sources of capital) post-acceleration program. I find no significant effect in the two models.
+
+It is important to highlight here, that not only I find no significant effect but also all the coefficients are negative. This negative effect on resource acquisition post-acceleration program can be interpreted economically, as an opportunity cost. Ventures that succeed in mobilizing resources put their time and efforts into acquiring business skills, developing their network, and seeking funding resources. While these efforts might result in resource acquisition, over the long-term, we would not be able to observe this within a year or two post resource mobilization. This is a key limitation of our data and analysis.
+
+\textbf{Performance}
+
+Based on the results of resource acquisition we would expect similar results for venture performance (hypothesis 3) since revenues are often accumulated post resource acquisition. We can consider this part of the analysis as a robustness check for the previous analysis on resource acquisition. Tables 14 to 16 confirm these expectations. I find only null effects of the impact of venture attention to a resource and its congruency level with the institutional level of the resource on performance (measured based on firm revenues) post acceleration program.
+
+There are several channels to interpret the results of all three outcomes. The most plausible explanation is that at their early stages of venturing, entrepreneurs do not have to align their attention to resources with the availability of resources in their institutional environment. However, their attention to internal human capital (i.e.~building their own business skills) becomes important if we consider the outcome as being selection to an incubation program instead to mobilize resources and prepare for long-term resource acquisition. Resource acquisition is a long-term goal and that is why I do not see any effects in the short term (2 years post acceleration). In contrast, selection to an incubation program is a short-term goal that opens the door for the long-term effects and that is how ventures in our sample should approach their resource base strategy (i.e.~mobilization first and acquisition would follow).
 
 \newpage
 

@@ -2,7 +2,7 @@
 \ifnextchar[{\eatarg}{}
 
 
-\caption{\label{tab:unnamed-chunk-18}Effect of attention to human capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of attention to human capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -26,7 +26,7 @@ Attention to Human capital(AHC) & 0.09 & 0.07 & 1.24 & 0.215 & 0.11 & 0.07 & 1.5
 \ifnextchar[{\eatarg}{}
 
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level of human capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level of human capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -54,7 +54,7 @@ AHCxEase of finding skilled employees & 0.01 & 0.01 & 1.37 & 0.171 & -0.17 & 0.1
 \ifnextchar[{\eatarg}{}
 
 
-\caption{\label{tab:unnamed-chunk-18}Effect of attention to financial capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of attention to financial capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -78,7 +78,7 @@ Attention to Financial capital & -0.19 & 0.06 & -3.02 & 0.003 & -0.19 & 0.06 & -
 \ifnextchar[{\eatarg}{}
 
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (SME financing) of financial capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (SME financing) of financial capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -106,7 +106,7 @@ AFCxFinancing of SMEs & 0.01 & 0.01 & 1.30 & 0.193 & 0.00 & 0.07 & 0.05 & 0.959\
 \ifnextchar[{\eatarg}{}
 
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (VC) of financial capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (VC) of financial capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -134,7 +134,7 @@ AFCxVC Availability & 0.01 & 0.01 & 1.31 & 0.190 & 0.01 & 0.05 & 0.28 & 0.778\\
 \ifnextchar[{\eatarg}{}
 
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (Credit gaps) of financial capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level (Credit gaps) of financial capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -162,7 +162,7 @@ AFCxDomestic Credit Gaps & 0.01 & 0.01 & 1.30 & 0.192 & 0.00 & 0.00 & 0.15 & 0.8
 \ifnextchar[{\eatarg}{}
 
 
-\caption{\label{tab:unnamed-chunk-18}Effect of attention to social capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of attention to social capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -186,7 +186,7 @@ Attention to Social capital & 0.12 & 0.07 & 1.79 & 0.073 & 0.11 & 0.07 & 1.69 & 
 \ifnextchar[{\eatarg}{}
 
 
-\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level of social capital}
+\caption{\label{tab:unnamed-chunk-18}Effect of congruency of venture attention and institutional level of social capital on likelihood of participation}
 \centering
 \begin{tabular}[t]{l|l|l|l|l|l|l|l|l}
 \hline
@@ -322,7 +322,7 @@ ASCxState of cluster development & 0.17 & 0.06 & 2.94 & NA & NA & NA\\
 
 \caption{\label{tab:unnamed-chunk-24}Effect on revenues}
 \centering
-\fontsize{7}{9}\selectfont
+\fontsize{8}{10}\selectfont
 \begin{tabular}[t]{l|l|l|l|l|l|l}
 \hline
 \multicolumn{1}{c|}{\em{ }} & \multicolumn{3}{c|}{\em{Congruence}} & \multicolumn{3}{c}{\em{AHC only}} \\
@@ -345,7 +345,7 @@ AHCxEase of finding skilled employees & -2,337,599.95 & 2,803,682.74 & -0.83 & N
 
 \caption{\label{tab:unnamed-chunk-24}Effect on revenues}
 \centering
-\fontsize{7}{9}\selectfont
+\fontsize{8}{10}\selectfont
 \begin{tabular}[t]{l|l|l|l|l|l|l}
 \hline
 \multicolumn{1}{c|}{\em{ }} & \multicolumn{3}{c|}{\em{Congruence}} & \multicolumn{3}{c}{\em{AFC only}} \\
@@ -376,7 +376,7 @@ AFCxDomestic Credit Gaps & 5,897.33 & 98,489.71 & 0.06 & NA & NA & NA\\
 
 \caption{\label{tab:unnamed-chunk-24}Effect on revenues}
 \centering
-\fontsize{7}{9}\selectfont
+\fontsize{8}{10}\selectfont
 \begin{tabular}[t]{l|l|l|l|l|l|l}
 \hline
 \multicolumn{1}{c|}{\em{ }} & \multicolumn{3}{c|}{\em{Congruence}} & \multicolumn{3}{c}{\em{ASC only}} \\
