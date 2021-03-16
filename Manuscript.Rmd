@@ -1,5 +1,5 @@
 ---
-title             : "An institutional approach to attention allocation and venture resource mobilization and acquisition"
+title             : "An Institutional Approach to Attention Allocation and Venture Resource Mobilization and Acquisition"
 shorttitle        : "An institutional approach to venture attention allocation"
 
 author: 
@@ -22,7 +22,7 @@ authornote: |
   Department of Management 
 
 abstract: |
-  Early stage entrepreneurs have access to limited resources and must decide what should garner their attention. The literatures on entrepreneurial resources and entrepreneurial attention show mixed results and often do not take into account the institutional context of the venture. I approach the question of entrepreneurial attention from an institutional perspective using the Global Accelerator Learning Initiative Data. In contrast to expectation based on the literature, I find that entrepreneurs do not have to align their attention to resources with the availability of resources in their institutional environment. However, their attention to internal human capital (i.e. building their own business skills) becomes important if we consider the outcome as being selection to an incubation program to mobilize resources and prepare for long-term resource acquisition. Resource acquisition is a long-term goal and that is why I do not see any effects in the short term. In contrast, selection to an incubation program is a short-term goal that opens the door for the long-term effects and that is how  early stage ventures should approach their resource base strategy. Mobilization comes first and acquisition would follow. Thus, the question is not what resources to seek, but when to seek mobilization and when to engage in acquisition of a resource. 
+  Early stage entrepreneurs have access to limited resources and must decide what should garner their attention. The literatures on entrepreneurial resources and entrepreneurial attention show mixed results and often do not take into account the institutional context of the venture. I approach the question of entrepreneurial attention from an institutional perspective using the Global Accelerator Learning Initiative Data. In contrast to expectation based on the literature, I found that entrepreneurs do not have to align their attention to resources with the availability of resources in their institutional environment. However, their attention to internal human capital (i.e. building their own business skills) becomes important if we consider selection to an incubation program to mobilize resources and prepare for long-term resource acquisition. Resource acquisition is a long-term goal and perhaps that is why I did not see any effects in the short term. In contrast, selection to an incubation program is a short-term goal that opens the door for the long-term effects and that is how  early stage ventures should approach their resource base strategy. Mobilization comes first and acquisition would follow. Thus, the question is not what resources to seek, but when to seek mobilization and when to engage in acquisition of a resource. 
   
   
 keywords          : "attention, resources, institutional capital, accelerators"
@@ -38,20 +38,16 @@ mask              : no
 draft             : no
 
 documentclass     : "apa6"
-classoption       : "man"
+classoption: "man, fleqn, noextraspace"
+header-includes:
+  - \raggedbottom
+  - \setlength{\parskip}{0pt}
 output            : papaja::apa6_pdf
 ---
 
 ```{r setup, include = FALSE}
 library("papaja")
 r_refs("r-references.bib")
-```
-
-```{r analysis-preferences}
-# Seed for random number generation
-set.seed(42)
-knitr::opts_chunk$set(cache.extra = knitr::rand_seed, warning = F, message = F, fig.pos = "!H", out.extra = "")
-#options(knitr.table.format = "latex")
 ```
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
@@ -104,23 +100,23 @@ Early stage entrepreneurs are faced with a range of resource choices to seek, an
 The value of a resource varies with its institutional context [@holburn2010political]. On the one hand, strong institutions can increase the value of a resource by streamlining access to complementary external resources [@khanna2001estimating; @north1990institutions]. For example, in countries with strong financing infrastructure, acquiring financing can streamline accessing other resources and thus it would make sense to focus on raising capital at venture’s earliest stages. On the other hand, resources such as legitimation or social capital can substitute for the weak institutions and capital infrastructure, thereby increasing in value when institutions are weak [@khanna1997focused; @kock2001strategy]. Therefore, the broader environment can enhance or inhibit the optimal use of the endowed resource capital. I posit that an examination of both the venture and its broader institutional environment would give us more insights about where founders attention should be allocated. Specifically, I hypothesize that the institutional-level capital positively moderates the relationship between a founder’s attention and its subsequent resource mobilization and acquisition. For example, attention to human capital is more positively related to a higher number of employees in contexts in which it has higher intuitional-level human capital. This similarly applies to social capital, and financial capital as the types of resources sought by entrepreneurs. Thus, in this paper I seek to examine the following research question: How does the alignment of the institutional context and the allocation of entrepreneurial attention toward specific resources influence the venture’s resource mobilization and acquisition? 
 
 # Hypotheses Development 
-At the heart of the intersection between resource acquisition and the institutional context is entrepreneurial attention, that is, founders’ attention allocation to resources. Bounded by their limited attentional capacities, entrepreneurs cannot attend to all the resources; rather, they focus on some resources but must ignore others. Where they focus their attention determines the propensity of mobilizing and acquiring resources. A venture could miss the chance to exploit an opportunity of resources acquisition if that opportunity never appears on the entrepreneur’s radar screens because they are too focused on an alternative resource. For example, a voluntary work with potential partners who are well connected to other investors might be missed because the founder is too focused on raising capital by honing their business plan over and over and even paying accounting boutique firms to develop that business plan for them. 
+At the heart of the intersection between resource acquisition and the institutional context is entrepreneurial attention, that is, founders’ attention allocation to resources. Bounded by their limited attentional capacities, entrepreneurs cannot attend to all the resources; rather, they focus on some resources but must ignore others. Where they focus their attention determines the propensity of mobilizing and acquiring resources. A venture could miss the chance to exploit an opportunity of resource acquisition if that opportunity never appears on the entrepreneur’s radar screens because they are too focused on an alternative resource. For example, a voluntary work with potential partners who are well connected to other investors might be missed because the founder is too focused on raising capital by honing their business plan over and over and even paying accounting boutique firms to develop that business plan for them. 
 
-Thus, selective attention plays a crucial role in both individual and organizational behavior because it bounds individual rationality and determines the menu of available actions [@simon1947comment]. The debate over which resource should garner the entrepreneur’s attention concludes that the founding team resource endowment is the key factor that influences resource acquisition. For instance, scholars argue that founding teams with a more ties to potential investors are more likely to gain funding [@shane2002organizational]. Furthermore, if we focus on the findings of the stream of research examining the performance implications of acquiring financial capital [@hochberg2007whom] we would expect that early-stage financing should be most likely to garner founders’ attention. However, the role of the institutional context has been ignored and neglected in this debate. I argue that selective attention allocation depends on both entrepreneur’s resource endowment and institutional capital.
+Thus, selective attention plays a crucial role in both individual and organizational behavior because it bounds individual rationality and determines the menu of available actions [@simon1947comment]. The debate over which resource should garner the entrepreneur’s attention concludes that the founding team resource endowment is the key factor that influences resource acquisition. For instance, scholars argue that founding teams with more ties to potential investors are more likely to gain funding [@shane2002organizational]. Furthermore, if we focus on the findings of the stream of research examining the performance implications of acquiring financial capital [@hochberg2007whom] we would expect that early-stage financing should be most likely to garner founders’ attention. However, the role of the institutional context has been ignored and neglected in this debate. I argue that selective attention allocation depends on both entrepreneur’s resource endowment and institutional capital.
 
 Therefore, I state the following hypotheses about the relationship between the congruence level of the entrepreneurs' attention to resources and the institutional level capital, and the venture's resource mobilization, acquisition, and performance. 
 
-**Hypothesis 1** *The higher the level of congruency of venture’s attention to a resource and its institutional level capital, the higher the odds of mobilization that resource* 
+**Hypothesis 1** *The higher the level of congruence of venture’s attention to a resource and its institutional level capital, the higher the odds of mobilization that resource.* 
 
-**Hypothesis 2** *The higher the level of congruency of venture’s attention to a resource and its institutional level capital, the higher the level of the accumulated resource* 
+**Hypothesis 2** *The higher the level of congruence of venture’s attention to a resource and its institutional level capital, the higher the level of the accumulated resource.* 
 
-**Hypothesis 3** *The higher the level of congruency of venture’s attention to a resource and its institutional level capital, the higher the venture performance* 
+**Hypothesis 3** *The higher the level of congruence of venture’s attention to a resource and its institutional level capital, the higher the venture performance.* 
 
 
 # Analysis
 
 ## Data and Measures
-The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. Our data include information – collected during program applications – about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at [GALI Data](www.galidata.org/data-request). This is multi-country dataset. It typically contains hundreds of ventures per country. 
+The dataset from the Global Accelerator Learning Initiative (GALI) covers entrepreneurs who applied to scores of accelerators that began accepting applications between 2013 and 2020. The data include information – collected during program applications – about ventures, founding teams, and pre-program performance. They also identify which applicants went on to participate in each program. Finally, these data include follow-up information collected from selected and rejected applicants in the years following each application window. The anonymized dataset containing both application and follow-up data can be accessed at [GALI Data](www.galidata.org/data-request). This is multi-country dataset. It typically contains hundreds of ventures per country. 
 
 When entrepreneurs apply to a GALI-participating accelerator, they are asked to complete a standardized survey which asks basic questions about their venture’s business model, financial performance, and founding team. Then, after one year, they are asked to complete a follow-up survey, whether or not they were accepted into the program to which they applied. 
 
@@ -208,26 +204,33 @@ library(kableExtra)
 ```
 
 ```{r Countries to analyse in main sample, message=FALSE, warning=FALSE, include=FALSE}
-gali <- import("Data/GALI_External_DataRelease_2020.xlsx") 
+gali <- import("Data/GALI_External_DataRelease_2020.xlsx") %>% 
+  as_tibble() #just easier for me to work with
+
 wb <- import("Data/CLASS.xls")
 count(gali,info_venture_country_hq)
 
 #Removing countries with less than 6 ventures. 
 
 countries_to_keep <- gali %>% 
-  group_by(gali$info_venture_country_hq) %>%
+  group_by(info_venture_country_hq) %>% #you do not need to index with $ here
   summarize(Count=n()) %>%
   mutate(Percent = round((Count/sum(Count)*100))) %>%
   arrange(desc(Count))
 
-countries_to_keep <- filter(countries_to_keep, `gali$info_venture_country_hq` != 'NA')
+countries_to_keep <- filter(countries_to_keep, 
+                            !is.na(info_venture_country_hq)) #if you remove the $ above, your variable name will change
 
 countries_to_keep <- filter(countries_to_keep, Count >9)
-countries_to_keep$`gali$info_venture_country_hq`
 
 gali <- gali %>%
-  filter(info_venture_country_hq  %in% countries_to_keep$`gali$info_venture_country_hq`)
+  filter(info_venture_country_hq  %in% countries_to_keep$info_venture_country_hq)
 
+# you can also use the code below
+
+# gali <- gali %>%
+#   as_tibble() %>% 
+#   inner_join(countries_to_keep) 
 ```
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
@@ -237,6 +240,12 @@ gali <- filter(gali, found_name3_age > 14 | is.na(found_name3_age))
 gali <- filter(gali, found_name1_age < 70 | is.na(found_name1_age))
 gali <- filter(gali, found_name2_age < 70 | is.na(found_name2_age))
 gali <- filter(gali, found_name3_age < 70 | is.na(found_name3_age))
+
+## This may be more efficient
+# gali %>% 
+#   filter(found_name1_age > 14 & found_name1_age < 70 | is.na(found_name1_age),
+#          found_name2_age > 14 & found_name2_age < 70 | is.na(found_name2_age),
+#          found_name3_age > 14 & found_name3_age < 70 | is.na(found_name3_age))
 
 #Keep only for porfit firms 
 gali <- filter(gali, info_legal_status == "For-profit company" ) 
@@ -250,6 +259,14 @@ if (gali$application_year == 2013) { gali <- filter(gali, info_founding_year > 2
 }  else if (gali$application_year == 2016) {gali <- filter(gali, info_founding_year > 2010)
 } else if (gali$application_year == 2017) {gali <- filter(gali, info_founding_year > 2011)
 }  else gali <- filter(gali, info_founding_year > 2012)
+
+# Something like this might be work
+# 
+# gali %>% 
+#   filter(application_year - info_founding_year < 6)
+    
+
+
 ```
 
 ```{r Countries to keep in sample with valid data, message=FALSE, warning=FALSE, include=FALSE}
@@ -261,8 +278,10 @@ gali <- gali %>%
 gali$country[gali$country == "United States of America"] <-"USA"
 gali$country[gali$country == "Tanzania, United Republic of"] <-"Tanzania"
 
+# consider the recode() function
+
 countries_to_keep <- gali %>% 
-  group_by(gali$country) %>%
+  group_by(gali$country) %>% # again $ not needed 
   summarize(Count=n()) %>%
   mutate(Percent = round((Count/sum(Count)*100))) %>%
   arrange(desc(Count))
@@ -281,33 +300,27 @@ gali <- gali %>%
 
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 #CGI data
-gci <- import("Data/GCI_2018.xlsx")
-
-gci <- filter(gci, `Series Global ID` == "EOSQ089" |
-                   `Series Global ID` == "EOSQ425" |
-                   `Series Global ID` == "EOSQ109" |
-                   `Series Global ID` == "DOMCREDITGDP" |
-                   `Series Global ID` == "EOSQ403")
-gci <- filter(gci, Edition ==2018 )
-
-gci <- filter(gci, Attribute == "VALUE")
-gci <- select(gci, -c("Index", "Edition", "Freeze date", "Series units", "Series order", "Series code (if applicable)", "Attribute", "Series name"))
-
-gci <- gci %>%
-  gather(country, score, -`Series Global ID`) 
-
-gci$country[gci$country == "United States"] <-"USA"
-
-gci <- gci %>%
-  filter(country  %in% countries_to_keep$`gali$country`)
-
-gci$score <- round(as.numeric(gci$score),2)
-
-gci <- clean_names(gci)
-
-gci <- gci %>%
-  pivot_wider(names_from = series_global_id, 
-              values_from = score)
+gci <- import("Data/GCI_2018.xlsx") %>% 
+  as_tibble() %>% 
+  filter(
+    `Series Global ID` == "EOSQ089" |
+    `Series Global ID` == "EOSQ425" |
+    `Series Global ID` == "EOSQ109" |
+    `Series Global ID` == "DOMCREDITGDP" |
+    `Series Global ID` == "EOSQ403",
+     Edition ==2018,
+     Attribute == "VALUE") %>% 
+  select(-c("Index", "Edition", "Freeze date", "Series units", "Series order", "Series code (if applicable)", "Attribute", "Series name")) %>% 
+  gather(country, score, -`Series Global ID`) %>% 
+  mutate(country = recode(country,
+                         "United States" = "USA")) %>%
+  filter(country  %in% countries_to_keep$`gali$country`) %>% 
+  mutate(score = round(as.numeric(score),2)) %>% 
+  clean_names() %>% 
+  pivot_wider(
+    names_from = series_global_id,
+    values_from = score
+    )
 ```
 
 
@@ -337,8 +350,9 @@ plotdev(xlim = c(3, 4), ylim = c(3, 5.5),
 
 #Removing ventures that ranked benefits outside of given scale (i.e. 1 to 7)
 
-gali <- filter(gali, accel_ben_rank_network <= 7 & accel_ben_rank_business_skills
-<= 7 & accel_ben_rank_mentorship <= 7 & accel_ben_rank_access_investors <= 7 & accel_ben_rank_direct_funding <= 7 & accel_ben_rank_access_entreprene <= 7 & accel_ben_rank_aware_cred <= 7 ) 
+#newish dplyr code you might like
+gali <- gali %>% 
+   filter(if_all(starts_with("accel_ben"), ~ . <= 7))
 
 #Removing ventures that gave the same ranking to two or more benefits 
 gali <- filter(gali, 
@@ -383,6 +397,7 @@ gali <- filter(gali,
 ###Graduate percentage, Prior C-level Executive Percentage, Average Team Tenure , Team Prior Founding 
 
 #Graduate percentage
+
 
 gali$founder1_grad = ifelse(gali$found_name1_education == "Masters Degree" | 
                               gali$found_name1_education =="PhD" |
@@ -627,6 +642,7 @@ gali <- cbind(gali %>%
 ```{r message=FALSE, warning=FALSE, include=FALSE}
 #Join all 3 datasets 
 gali_joined <- left_join(gali, gci, by = "country")
+
 ```
 
 ```{r message=FALSE, warning=FALSE}
@@ -677,7 +693,8 @@ summary_table_z <- function(x){ x$coefficients %>%
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 #Outcome: resource mobilization 
 #Models
-library(lme4)
+library(lme4) #generally best practice to load all libraries at the top of the script
+
 fit0hc <- glmer(participated ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country), data = gali_joined, family=binomial)
 
 fit0hc_c <- glmer(participated ~  accel_ben_rank_business_skills + (accel_ben_rank_business_skills|country) + HC_index + female_pct, data = gali_joined, family=binomial)
@@ -929,19 +946,19 @@ kable_styling(font_size = 8)
 # Results and Discussion
 **Resource mobilization**
 
-I find no support for hypothesis 1, with exception for certain resources. Specifically, Table 1 shows that an increase in venture attention to human capital causes an increase in the venture's likelihood to participate to the acceleration program and mobilize resources. However, this effect is not statistically significant. The model is robust to the addition of control variables. Similarly, table 7 show that an increase in venture to attention social capital causes an increase in the venture's likelihood to mobilize resources within the acceleration program. These effects are not statistically signification. Table 3 on the other hand, show that an increase in venture attention to social capital results in a significant decrease in the venture's likelihood to mobilize resources. This shows that early stage ventures applying to accelerator programs benefit the most if they first focus on mobilizing human and social capital resources before turning attention to financial capital. To examine our hypotheses exploring these same relationships within the institutional context of the venture, we turn to tables 2, 4, 5, 6, and 8. When I interact the venture level attention to human capital with the institutional level human capital (Table 2), I find that attention to this resource results in a significant increase in the likelihood to mobilize resources within the accelerator program ($b = 0.9$), and the model is robust to control variables. In contrast, tables 3 to 5 show that attention to financial capital has a non-significant effect on the venture's likelihood to mobilize resources regardless of the institutional context. We find the same results whether we consider institutional level capital for SMEs, VC oriented ventures, or ventures seeking loans and other forms of financing from financial establishments. This is in line with our initial finding that human and social capital should garner the attention of ventures seeking resources in their early stage from incubators and accelerators. Finally, table 8 shows us that the congruency of venture attention and the institutional level of social capital does not have any significant effect on the venture's likelihood to mobilize resources. 
+I find no support for hypothesis 1, with exception for certain resources. Specifically, Table 1 shows that an increase in venture attention to human capital causes an increase in the venture's likelihood to participate to the acceleration program and mobilize resources. However, this effect is not statistically significant. The model is robust to the addition of control variables. Similarly, Table 7 show that an increase in venture to attention social capital causes an increase in the venture's likelihood to mobilize resources within the acceleration program. These effects are not statistically signification. Table 3 on the other hand, show that an increase in venture attention to social capital results in a significant decrease in the venture's likelihood to mobilize resources. This shows that early stage ventures applying to accelerator programs benefit the most if they first focus on mobilizing human and social capital resources before turning attention to financial capital. To examine our hypotheses exploring these same relationships within the institutional context of the venture, we turn to tables 2, 4, 5, 6, and 8. When I interact the venture level attention to human capital with the institutional level human capital (Table 2), I find that attention to this resource results in a significant increase in the likelihood to mobilize resources within the accelerator program ($b = 0.9$) <!-- make this data-responsive -->, and the model is robust to control variables. In contrast, Tables 3 to 5 show that attention to financial capital has a non-significant effect on the venture's likelihood to mobilize resources regardless of the institutional context. We find the same results whether we consider institutional level capital for SMEs, VC oriented ventures, or ventures seeking loans and other forms of financing from financial establishments. This is in line with our initial finding that human and social capital should garner the attention of ventures seeking resources in their early stage from incubators and accelerators. Finally, Table 8 shows us that the congruence of venture attention and the institutional level of social capital does not have any significant effect on the venture's likelihood to mobilize resources. 
 
-This first part of the analysis focuses on resource mobilization within accelerator programs and explores the relationship between venture attention to a certain type of resources and its influence on the venture's likelihood to participate to the program. I find that social and human capital are the key resources that should be on the venture's radar in their early stage of strategy formation. I then investigate the impact of the congruency between the venture attention and the institutional level capital to better understand these relationships within their institutional context. I find that human capital is not only one of the key resources to focus on but it becomes even more important if it aligns with the venture's country to provide skillful human resources. 
+This first part of the analysis focuses on resource mobilization within accelerator programs and explores the relationship between venture attention to a certain type of resources and its influence on the venture's likelihood to participate to the program. I find that social and human capital are the key resources that should be on the venture's radar in their early stage of strategy formation. I then investigate the impact of the congruence between the venture attention and the institutional level capital to better understand these relationships within their institutional context. I find that human capital is not only one of the key resources to focus on but it becomes even more important if it aligns with the venture's country to provide skillful human resources. 
 
 **Resource acquisition**
 
-Similar to hypothesis 1, I find no support for the second hypothesis. Table 9 shows the impact of venture attention to human capital and its congruency level with the institutional capital on the acquisition of human capital (total number of employees) post-acceleration program. I find no significant effect in the two models. Tables 10 to 12 show the impact of venture attention to financial capital and its congruency level with the institutional capital on the acquisition of financial capital (capital raised in USD) post-acceleration program. I find no significant effect in the two models. Finally, table 13 shows the the impact of venture attention to social capital and its congruency level with the institutional capital on the acquisition of social capital (sources of capital) post-acceleration program. I find no significant effect in the two models. 
+Similar to hypothesis 1, I find no support for the second hypothesis. Table 9 shows the impact of venture attention to human capital and its congruence level with the institutional capital on the acquisition of human capital (total number of employees) post-acceleration program. I find no statistically significant effect in the two models. Tables 10 to 12 show the impact of venture attention to financial capital and its congruence level with the institutional capital on the acquisition of financial capital (capital raised in USD) post-acceleration program. I find no significant effect in the two models. Finally, table 13 shows the the impact of venture attention to social capital and its congruence level with the institutional capital on the acquisition of social capital (sources of capital) post-acceleration program. I find no statistically significant effect in the two models. 
 
-It is important to highlight here, that not only I find no significant effect but also all the coefficients are negative. This negative effect on resource acquisition post-acceleration program can be interpreted economically, as an opportunity cost. Ventures that succeed in mobilizing resources put their time and efforts into acquiring business skills, developing their network, and seeking funding resources. While these efforts might result in resource acquisition, over the long-term, we would not be able to observe this within a year or two post resource mobilization. This is a key limitation of our data and analysis. 
+It is important to highlight here, that not only I find no statistically significant effect but also all the coefficients are negative. This negative effect on resource acquisition post-acceleration program can be interpreted economically, as an opportunity cost. Ventures that succeed in mobilizing resources put their time and efforts into acquiring business skills, developing their network, and seeking funding resources. While these efforts might result in resource acquisition, over the long-term, we would not be able to observe this within a year or two post resource mobilization. This is a key limitation of our data and analyses. 
 
 **Performance**
 
-Based on the results of resource acquisition we would expect similar results for venture performance (hypothesis 3) since revenues are often accumulated post resource acquisition. We can consider this part of the analysis as a robustness check for the previous analysis on resource acquisition. Tables 14 to 16 confirm these expectations. I find only null effects of the impact of venture attention to a resource and its congruency level with the institutional level of the resource on performance (measured based on firm revenues) post acceleration program. 
+Based on the results of resource acquisition we would expect similar results for venture performance (hypothesis 3) since revenues are often accumulated post resource acquisition. We can consider this part of the analysis as a robustness check for the previous analysis on resource acquisition. Tables 14 to 16 confirm these expectations. I find only null effects of the impact of venture attention to a resource and its congruence level with the institutional level of the resource on performance (measured based on firm revenues) post acceleration program. 
 
 # Conclusion 
 
